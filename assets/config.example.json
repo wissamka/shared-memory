@@ -1,0 +1,27 @@
+{
+  "preferred_name": "Example User",
+  "role": "Independent researcher",
+  "goal": "Carry decisions and document preferences between agents",
+  "timezone": "Europe/London",
+  "vault_path": "~/OneDrive/Obsidian/Shared Memory",
+  "onedrive_relative_path": "Obsidian/Shared Memory",
+  "capture_mode": "durable",
+  "topics": ["Work", "Learning", "Ideas"],
+  "communication_preferences": ["Lead with the recommendation, then supporting evidence"],
+  "document_preferences": ["Use editable Markdown unless another format is requested"],
+  "voice_rules": [],
+  "voice_sources": [],
+  "approval_rules": ["Ask before sending messages or publishing"],
+  "excluded_data": ["Credentials and authentication codes"],
+  "daily_time": "02:00",
+  "harness_targets": [],
+  "provenance": {
+    "assistant": "unknown",
+    "harness": "unknown",
+    "model": "unknown",
+    "model_note": "Replace with runtime evidence during the actual installation",
+    "agent": "unknown",
+    "session_id": "unknown",
+    "chat_reference": "unavailable"
+  }
+}

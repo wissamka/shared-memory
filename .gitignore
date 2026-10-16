@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.DS_Store
+.env*
+private/
+vault/
+dist/
+*.local.json
+.venv/
+.memory-state/
+pending-memory/
