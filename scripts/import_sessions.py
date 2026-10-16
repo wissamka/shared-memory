@@ -24,7 +24,7 @@ def extract(path, kind, start, end, editor):
     records, gaps = [], []
     session, model = 'unknown', 'unknown'
     visible_records = 0
-    for line_number, line in enumerate(path.read_text().splitlines(), 1):
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
             continue
         try:
@@ -131,7 +131,7 @@ def main():
     args = parser.parse_args()
     try:
         result = collect(args.kind, args.source, safe_path(args.vault), args.date,
-                         json.loads(Path(args.editor).read_text()), args.apply)
+                         json.loads(Path(args.editor).read_text(encoding="utf-8")), args.apply)
         print(json.dumps(result, indent=2, ensure_ascii=False))
         return 2 if result['coverage_gaps'] else 0
     except (ValueError, OSError, KeyError, TypeError) as exc:

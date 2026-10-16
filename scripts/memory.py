@@ -11,7 +11,7 @@ from common import create_once, digest, encoded, note, provenance, safe_path, ti
 
 
 def config(root):
-    return json.loads(within(root, '.memory-state/config.json').read_text())
+    return json.loads(within(root, '.memory-state/config.json').read_text(encoding="utf-8"))
 
 
 def capture(root, data):
@@ -29,7 +29,7 @@ def capture(root, data):
     identity = digest(data['source_id'].encode())
     path = within(root, f'_Inbox/{identity}.json')
     if path.exists():
-        prior = json.loads(path.read_text())
+        prior = json.loads(path.read_text(encoding="utf-8"))
         # A repeat capture by another editor is still the same source evidence.
         old = {k: v for k, v in prior.items() if k not in ('captured_at', 'captured_by')}
         new = {k: v for k, v in data.items() if k not in ('captured_at', 'captured_by')}
@@ -55,7 +55,7 @@ def capture(root, data):
 def reviewed(root):
     result = set()
     for path in sorted(within(root, '.memory-state/receipts').glob('*.json')):
-        doc = json.loads(safe_path(path).read_text())
+        doc = json.loads(safe_path(path).read_text(encoding="utf-8"))
         result.update(item['input_id'] for item in doc['results'])
     return result
 
@@ -89,7 +89,7 @@ def complete(root, receipt):
     run_id = receipt.get('run_id', '')
     if len(run_id) != 64 or any(ch not in '0123456789abcdef' for ch in run_id):
         raise ValueError('Invalid run ID')
-    manifest = json.loads(within(root, f'.memory-state/runs/{run_id}.json').read_text())
+    manifest = json.loads(within(root, f'.memory-state/runs/{run_id}.json').read_text(encoding="utf-8"))
     expected = {item['input_id']: item for item in manifest['inputs']}
     results = receipt.get('results', [])
     if not isinstance(results, list) or any(not isinstance(x, dict) for x in results):
@@ -119,7 +119,7 @@ def complete(root, receipt):
              'date': manifest['date'], 'coverage': manifest['coverage']}
     path = within(root, f'.memory-state/receipts/{run_id}.json')
     if path.exists():
-        prior = json.loads(path.read_text())
+        prior = json.loads(path.read_text(encoding="utf-8"))
         if {k: v for k, v in prior.items() if k != 'completed_at'} != saved:
             raise ValueError('Receipt already exists with different results; preserve history')
         return prior
@@ -151,11 +151,11 @@ def main():
     try:
         root = safe_path(args.vault)
         if args.command == 'capture':
-            output = capture(root, json.loads(Path(args.input).read_text()))
+            output = capture(root, json.loads(Path(args.input).read_text(encoding="utf-8")))
         elif args.command == 'prepare':
             output = prepare(root, args.date)
         elif args.command == 'complete':
-            output = complete(root, json.loads(Path(args.receipt).read_text()))
+            output = complete(root, json.loads(Path(args.receipt).read_text(encoding="utf-8")))
         else:
             output = status(root)
         print(json.dumps(output, indent=2, ensure_ascii=False))

@@ -16,7 +16,7 @@ def check(root=ROOT):
     for path in files:
         if path.suffix not in ('.md', '.py', '.json', '.yaml', '.yml'):
             continue
-        content = path.read_text()
+        content = path.read_text(encoding="utf-8")
         if path.suffix == '.py':
             try:
                 ast.parse(content)

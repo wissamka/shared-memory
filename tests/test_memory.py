@@ -21,11 +21,11 @@ class MemoryTests(unittest.TestCase):
         self.base = Path(self.temp.name).resolve()
         self.root = self.base / 'Vault with spaces'
         package = Path(__file__).resolve().parents[1]
-        self.c = json.loads((package / 'assets/config.example.json').read_text())
+        self.c = json.loads((package / 'assets/config.example.json').read_text(encoding="utf-8"))
         self.c['vault_path'] = str(self.root)
         self.c['timezone'] = 'America/New_York'
         self.editor = self.c['provenance']
-        self.data = json.loads((package / 'assets/capture.example.json').read_text())
+        self.data = json.loads((package / 'assets/capture.example.json').read_text(encoding="utf-8"))
 
     def tearDown(self):
         self.temp.cleanup()
@@ -49,21 +49,21 @@ class MemoryTests(unittest.TestCase):
         saved = hook.read_bytes()
         self.assertTrue(saved.startswith(original))
         profile = self.root / 'Personal/Profile.md'
-        profile.write_text(profile.read_text() + '\nUser update.\n')
+        profile.write_text(profile.read_text(encoding="utf-8") + '\nUser update.\n', encoding="utf-8")
         self.install()
         self.assertEqual(saved, hook.read_bytes())
-        self.assertIn('User update.', profile.read_text())
+        self.assertIn('User update.', profile.read_text(encoding="utf-8"))
 
     def test_nonempty_unrelated_vault_rejected(self):
         self.root.mkdir()
-        (self.root / 'keep.md').write_text('Original')
+        (self.root / 'keep.md').write_text('Original', encoding="utf-8")
         with self.assertRaises(ValueError):
             self.install()
         self.assertEqual(['keep.md'], [p.name for p in self.root.iterdir()])
 
     def test_conflicting_hook_preflight_writes_nothing(self):
         hook = self.base / 'CLAUDE.md'
-        hook.write_text(bootstrap.BEGIN + '\nother setup\n' + bootstrap.END)
+        hook.write_text(bootstrap.BEGIN + '\nother setup\n' + bootstrap.END, encoding="utf-8")
         self.c['harness_targets'] = [{'kind': 'claude', 'path': str(hook)}]
         with self.assertRaises(ValueError):
             self.install()
@@ -112,6 +112,16 @@ class MemoryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.install()
 
+    def test_unicode_profile_and_capture_round_trip(self):
+        self.c['preferred_name'] = 'Zoë — 李'
+        self.c['document_preferences'] = ['Écrire en français, avec des références.']
+        self.install()
+        self.assertIn('Zoë — 李', (self.root / 'Personal/Profile.md').read_text(encoding='utf-8'))
+        self.data['text'] = 'Préférence confirmée : résumé en français. 日本語も。'
+        result = memory.capture(self.root, self.data)
+        saved = json.loads(Path(result['capture']).read_text(encoding='utf-8'))
+        self.assertEqual(self.data['text'], saved['text'])
+
     def test_capture_duplicate_and_conflict(self):
         self.install()
         first = memory.capture(self.root, self.data)
@@ -151,7 +161,7 @@ class MemoryTests(unittest.TestCase):
         run = memory.prepare(self.root, '2030-04-02')
         destination = self.root / 'Personal/Preferences.md'
         # Mimic an agent's verified, source-attributed synthesis; no model invoked.
-        destination.write_text(destination.read_text() + '\nDecision briefs: one page. Source: fictional-session-1:turn-3:preference.\n')
+        destination.write_text(destination.read_text(encoding="utf-8") + '\nDecision briefs: one page. Source: fictional-session-1:turn-3:preference.\n', encoding="utf-8")
         return {'run_id': run['run_id'], 'editor': self.editor, 'coverage_gaps': [], 'results': [
             {'input_id': item['input_id'], 'outcome': 'promoted', 'reason': 'Explicit preference saved',
              'destinations': [{'path': 'Personal/Preferences.md', 'sha256': digest(destination.read_bytes())}]}]}
@@ -165,7 +175,7 @@ class MemoryTests(unittest.TestCase):
 
     def test_missing_or_changed_destination_keeps_pending(self):
         receipt = self.setup_review()
-        (self.root / 'Personal/Preferences.md').write_text('Concurrent edit')
+        (self.root / 'Personal/Preferences.md').write_text('Concurrent edit', encoding="utf-8")
         with self.assertRaises(ValueError):
             memory.complete(self.root, receipt)
         self.assertEqual(1, memory.status(self.root)['pending'])
@@ -208,12 +218,12 @@ class MemoryTests(unittest.TestCase):
             {'type': 'response_item', 'timestamp': '2030-04-02T12:00:02Z', 'payload': {'type': 'message', 'role': 'assistant', 'channel': 'final', 'content': [{'type': 'output_text', 'text': 'Preference saved.'}]}},
             {'type': 'response_item', 'timestamp': '2030-04-02T12:00:03Z', 'payload': {'type': 'message', 'role': 'system', 'content': [{'type': 'input_text', 'text': 'SYSTEM CONTENT'}]}}
         ]
-        (source / 'old-session.jsonl').write_text('\n'.join(json.dumps(x) for x in lines))
+        (source / 'old-session.jsonl').write_text('\n'.join(json.dumps(x) for x in lines), encoding="utf-8")
         preview = collect('codex', source, self.root, '2030-04-02', self.editor)
         self.assertEqual(2, preview['visible_messages'])
         self.assertEqual(0, memory.status(self.root)['captured'])
         collect('codex', source, self.root, '2030-04-02', self.editor, apply=True)
-        saved = '\n'.join(p.read_text() for p in (self.root / '_Inbox').glob('*.json'))
+        saved = '\n'.join(p.read_text(encoding="utf-8") for p in (self.root / '_Inbox').glob('*.json'))
         self.assertNotIn('PRIVATE REASONING', saved)
         self.assertNotIn('SYSTEM CONTENT', saved)
         self.assertIn('example-exact-model', saved)
@@ -227,11 +237,11 @@ class MemoryTests(unittest.TestCase):
                    'message': {'model': 'example-model', 'content': [{'type': 'thinking', 'thinking': 'HIDDEN'},
                                                                   {'type': 'text', 'text': 'Visible answer'}]}},
                   {'type': 'user', 'timestamp': '2030-04-02T12:00:00Z', 'message': {'content': [{'type': 'tool_result', 'content': 'TOOL SECRET'}]}}]
-        (source / 'session.jsonl').write_text('\n'.join(json.dumps(x) for x in events) + '\n{broken')
+        (source / 'session.jsonl').write_text('\n'.join(json.dumps(x) for x in events) + '\n{broken', encoding="utf-8")
         report = collect('claude', source, self.root, '2030-04-02', self.editor, True)
         self.assertEqual(1, report['visible_messages'])
         self.assertTrue(report['coverage_gaps'])
-        saved = '\n'.join(p.read_text() for p in (self.root / '_Inbox').glob('*.json'))
+        saved = '\n'.join(p.read_text(encoding="utf-8") for p in (self.root / '_Inbox').glob('*.json'))
         self.assertNotIn('HIDDEN', saved)
         self.assertNotIn('TOOL SECRET', saved)
 

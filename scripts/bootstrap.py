@@ -152,7 +152,7 @@ def build(c, root, now):
     add('Automation/Daily review prompt.md', '# Daily review prompt\n\n'
         f'Vault-relative cloud locator: `{c.get("onedrive_relative_path", "not configured")}`. '
         f'Timezone: `{c["timezone"]}`. Resolve the actual local or connector path for this host.\n\n'
-        + (PACKAGE / 'assets/daily-prompt.md').read_text(), 'procedure')
+        + (PACKAGE / 'assets/daily-prompt.md').read_text(encoding="utf-8"), 'procedure')
     add('Automation/Startup instructions.md', '# Startup instructions for other interfaces\n\n'
         'Resolve this vault through its configured local path or authenticated cloud-relative locator. '
         'Read rules.md, AGENTS.md, index.md, recent log.md and the relevant profile and project notes. '
@@ -217,7 +217,7 @@ def plan(c):
     fingerprint = digest(encoded(c))
     existing = marker.exists()
     if existing:
-        state = json.loads(marker.read_text())
+        state = json.loads(marker.read_text(encoding="utf-8"))
         if state.get('version') != 1 or state.get('config_sha256') != fingerprint:
             raise ValueError('Different existing installation; integrate manually or choose a new vault')
         now = state['created_at']
@@ -295,7 +295,7 @@ def main():
     parser.add_argument('--preview', action='store_true')
     args = parser.parse_args()
     try:
-        install(json.loads(Path(args.config).read_text()), args.apply, args.preview)
+        install(json.loads(Path(args.config).read_text(encoding="utf-8")), args.apply, args.preview)
     except (ValueError, OSError, KeyError, TypeError) as exc:
         print(f'Setup stopped; existing files preserved: {exc}', file=sys.stderr)
         return 1
