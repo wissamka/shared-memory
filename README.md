@@ -1,4 +1,4 @@
-# Shared Memory
+# Shared Memory AI Second Brain
 
 A standalone agent skill that sets up an Obsidian knowledge base, learns how you like to work, and carries useful context between AI tools.
 

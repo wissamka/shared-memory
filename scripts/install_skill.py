@@ -84,7 +84,7 @@ def main():
         if not targets:
             if not sys.stdin.isatty():
                 parser.error('Choose --harness codex/claude or --target; no interactive terminal available')
-            print('Install Shared Memory for: 1 Codex, 2 Claude Code, 3 Both, 4 Custom folder')
+            print('Install Shared Memory AI Second Brain for: 1 Codex, 2 Claude Code, 3 Both, 4 Custom folder')
             choice = input('Choose 1–4: ').strip()
             if choice not in ('1', '2', '3', '4'):
                 raise ValueError('Choose 1, 2, 3 or 4')

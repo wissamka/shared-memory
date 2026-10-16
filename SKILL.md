@@ -3,7 +3,7 @@ name: shared-memory
 description: Bootstrap and maintain a personal Obsidian memory vault shared across AI harnesses. Use for installing shared memory, remembering or storing information, resuming work, personalizing assistant style, and configuring or running daily session synthesis.
 ---
 
-# Shared memory
+# Shared Memory AI Second Brain
 
 Build memory the owner can read, correct, move and reuse. This skill is self-contained: resolve bundled files relative to this directory. It does not depend on the author's vault, accounts, other skills or private paths.
 
