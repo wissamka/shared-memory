@@ -21,7 +21,9 @@ Record the exact correction, source, date and scope. Amend all relevant maintain
 
 ## Forget this
 
-Stop using the identified information immediately. Resolve ambiguous scope before deletion. Remove/redact it from active notes, derived summaries, captures and pending inputs within the authorized scope; inspect related notes so the next daily run does not reintroduce it. Explain where immutable originals, external chat history, OneDrive version history and backups may retain copies. Do not promise complete erasure outside available control. Add a non-sensitive suppression identifier in `Automation/Sources.md` for future ingestion and a minimal log notice; do not repeat the forgotten content in the notice. Raw-source preservation is a routine-maintenance convention, not a reason to ignore an authorized privacy deletion.
+Stop using the identified information immediately. Resolve ambiguous scope before deletion. Remove/redact it from active notes, derived summaries, captures and pending inputs within the authorized scope; inspect related notes so the next daily run does not reintroduce it. Explain where immutable originals, external chat history, cloud version history and backups may retain copies. Do not promise complete erasure outside available control. Add a non-sensitive suppression identifier in `Automation/Sources.md` for future ingestion and a minimal log notice; do not repeat the forgotten content in the notice. Raw-source preservation is a routine-maintenance convention, not a reason to ignore an authorized privacy deletion.
+
+For captured evidence being deleted or redacted, remove the affected review receipts and manifests under `.memory-state/receipts` and `.memory-state/runs` as part of that authorized deletion; they contain source identifiers and may contain sensitive reasons. Remaining inputs from those runs become pending again and must be checked against existing notes. Do not edit hashes to pretend the old evidence was unchanged. Keep suppression identifiers in the source registry, and apply them when selecting imports; the JSONL helper does not automatically enforce that registry.
 
 ## Personalization during ordinary work
 

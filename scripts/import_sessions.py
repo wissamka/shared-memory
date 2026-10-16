@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 from zoneinfo import ZoneInfo
 
-from common import digest, provenance, safe_path, timestamp
+from common import cli_encoding, digest, encoded, provenance, safe_path, timestamp
 from memory import capture, config
 
 
@@ -24,6 +24,10 @@ def extract(path, kind, start, end, editor):
     records, gaps = [], []
     session, model = 'unknown', 'unknown'
     visible_records = 0
+    occurrences = {}
+
+    def identifier(value):
+        return value if isinstance(value, str) and value.strip() else 'unknown'
     for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
             continue
@@ -39,10 +43,11 @@ def extract(path, kind, start, end, editor):
         payload = payload if isinstance(payload, dict) else {}
         if kind == 'codex':
             if event.get('type') == 'session_meta':
-                session = payload.get('id') or 'unknown'
+                session = identifier(payload.get('id'))
+                model = 'unknown'
                 continue
             if event.get('type') == 'turn_context':
-                model = payload.get('model') or 'unknown'
+                model = identifier(payload.get('model'))
                 continue
             if event.get('type') != 'response_item' or payload.get('type') != 'message':
                 continue
@@ -63,8 +68,8 @@ def extract(path, kind, start, end, editor):
             if not isinstance(message, dict) or role not in ('user', 'assistant') or event.get('isMeta'):
                 continue
             content = text_blocks(message.get('content'), ('text',))
-            session = event.get('sessionId') or session
-            source_model = message.get('model', 'unknown') if role == 'assistant' else 'unknown'
+            session = identifier(event.get('sessionId')) if event.get('sessionId') else session
+            source_model = identifier(message.get('model')) if role == 'assistant' else 'unknown'
         if not content.strip():
             continue
         visible_records += 1
@@ -75,8 +80,14 @@ def extract(path, kind, start, end, editor):
             continue
         if not start <= stamp < end:
             continue
-        # Stable across reruns and copied files; distinct line positions preserve repeated turns.
-        source_id = f'{kind}:{session}:{line_number}:{digest(line.encode())}'
+        # Semantic identity survives JSON formatting, telemetry insertion and copied
+        # exports. An occurrence counter preserves truly identical repeated turns.
+        scope = session if session != 'unknown' else 'file-' + digest(str(path.resolve()).encode())
+        if session == 'unknown':
+            gaps.append(f'{path.name}:{line_number}: session ID unavailable; identity scoped to source file')
+        signature = digest(encoded([kind, scope, stamp.isoformat(), role, content, source_model]))
+        occurrences[signature] = occurrences.get(signature, 0) + 1
+        source_id = f'{kind}:{scope}:{signature}:{occurrences[signature]}'
         records.append({'source_id': source_id, 'source_date': stamp.isoformat(),
                         'session_id': session, 'harness': 'Codex' if kind == 'codex' else 'Claude Code',
                         'assistant': ('Codex' if kind == 'codex' else 'Claude') if role == 'assistant' else 'user',
@@ -121,6 +132,7 @@ def collect(kind, source, root, day, editor, apply=False):
 
 
 def main():
+    cli_encoding()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--kind', choices=('codex', 'claude'), required=True)
     parser.add_argument('--source', required=True)

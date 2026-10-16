@@ -49,7 +49,8 @@ Never request credentials. Explain that local transcripts may contain sensitive 
 
 ## 6. Installation and daily review
 
-- Operating system, existing Obsidian vault and selected OneDrive account/folder?
+- Do you already use OneDrive, Google Drive, another shared-drive solution (such as Dropbox, iCloud or a network share), or do you want local storage only?
+- Which operating system, account and actual shared folder should we use? Is there an existing Obsidian vault to integrate? For cloud storage, is the folder available locally or only through a connector?
 - Which harnesses and devices should read this memory? Which startup files may be edited?
 - Timezone and daily review time? Prefer after the day ends, for example 02:00 for the previous calendar day, with catch-up after downtime.
 - Which runtime will execute the review, and does it have persistent access to the sources and vault?

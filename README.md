@@ -4,7 +4,7 @@ A standalone agent skill that sets up an Obsidian knowledge base, learns how you
 
 Load [SKILL.md](SKILL.md) into an agent that can read and write files, then say:
 
-> Set up shared memory for me. Interview me about my work and document preferences, put the vault in my OneDrive folder, connect the AI tools I use, and schedule a daily review of my sessions.
+> Set up shared memory for me. Ask which shared drive I use, interview me about my work and document preferences, connect the AI tools I use, and schedule a daily review of my sessions.
 
 The agent asks about your preferences and creates your system. You can skip personal questions. No Obsidian plugin, database, embedding service or API key is required for the file tools. An AI harness performs synthesis; its own access and usage limits apply.
 
@@ -16,7 +16,7 @@ The agent asks about your preferences and creates your system. You can skip pers
 - “Remember this,” “store this,” “correct this,” “what do you know about me?” and “resume” workflows.
 - Session captures, a daily synthesis prompt, per-input review receipts and missed-run catch-up.
 - Startup files for Codex, Claude Code, Gemini CLI, Cursor and GitHub Copilot, plus generic instructions for other interfaces.
-- OneDrive setup and cross-device verification guidance.
+- Storage choice: OneDrive, Google Drive, another shared drive, or local only, with cross-device verification guidance.
 
 ```mermaid
 flowchart LR
@@ -30,19 +30,31 @@ flowchart LR
     F --> G
 ```
 
-Daily review covers authorized sources the selected runtime can actually access. Local-only conversations, unavailable accounts and incomplete exports remain explicit coverage gaps. Session capture at milestones reduces dependence on proprietary chat-history formats. OneDrive synchronizes files; it does not grant another AI tool access or automatically install a scheduler.
+Daily review covers authorized sources the selected runtime can actually access. Local-only conversations, unavailable accounts and incomplete exports remain explicit coverage gaps. Session capture at milestones reduces dependence on proprietary chat-history formats. A shared drive synchronizes files; it does not grant another AI tool access or automatically install a scheduler.
 
 ## Install the skill
 
-Download this repository into a folder named `shared-memory`. Keep the whole folder: the skill uses `references/`, `scripts/` and `assets/`.
+Download and extract this repository, or clone it. From that folder, run the interactive installer:
 
-- **Codex:** place it in `~/.agents/skills/shared-memory/`, or ask Codex to read this checkout's `SKILL.md`.
-- **Claude Code:** place it in `~/.claude/skills/shared-memory/`, then invoke `/shared-memory`.
-- **Other agents:** give the agent the folder and ask it to read `SKILL.md`. A Markdown attachment alone is insufficient if its referenced files are unavailable.
+```sh
+python3 install.py
+```
+
+On Windows use `py install.py`. Choose Codex, Claude Code, both, or a custom skill folder. The script previews the destination, then installs the complete skill after your confirmation. No manual file copying is required.
+
+For a direct installation into both supported default locations:
+
+```sh
+python3 install.py --harness codex claude --apply
+```
+
+Omit `--apply` to preview only. Use `--target /absolute/path/shared-memory` for another harness's supported skill directory. Codex defaults to `~/.agents/skills/shared-memory`; Claude Code defaults to `~/.claude/skills/shared-memory`. Existing different or edited installations are preserved; identical installation can resume. This installer makes no network calls and installs no dependencies.
+
+Start a fresh agent session and request shared-memory setup (or `/shared-memory` in Claude Code). The agent asks whether you use OneDrive, Google Drive, another service, or local storage only, then resolves the actual location. For an interface without skill discovery, ask it to read the downloaded `SKILL.md` and its bundled files.
 
 Follow [the installation guide](references/installation.md) for a script-driven setup. Python 3.10+ is required for helpers; install the `tzdata` package if the platform has no IANA timezone database. The skill can also guide an agent through equivalent file creation when Python is unavailable, with the same collision and validation checks.
 
-The installer creates a **new** vault and preserves existing startup instructions. It refuses unrelated nonempty vaults. Existing vaults need a reviewed integration, not an overwrite. Keep the public skill repository and private vault in separate directories. Examples are fictional; configuration, personal captures and generated vaults belong outside this repository.
+The separate vault bootstrap creates a **new** vault and preserves existing startup instructions. It refuses unrelated nonempty vaults. Existing vaults need a reviewed integration, not an overwrite. Keep the public skill repository and private vault in separate directories. Examples are fictional; configuration, personal captures and generated vaults belong outside this repository.
 
 ## Daily scheduling
 
@@ -70,5 +82,7 @@ python3 scripts/check_package.py
 ```
 
 Tests use fictional records and temporary directories. They exercise preservation, duplicate capture, failed review receipts, day boundaries and source filtering. They cannot prove a particular user's cloud sync, model quality or scheduler availability. See [acceptance tests](references/acceptance.md) for the live installation checks.
+
+The [four-pass verification record](reports/verification.md) documents the 64-test suite, defects fixed, privacy review and limits of testing.
 
 MIT licensed. No private source vault, transcript, personal contact information or credentials are distributed with this package.

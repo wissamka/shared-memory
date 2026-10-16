@@ -17,7 +17,7 @@ Run these checks using harmless fictional content, then record results in `Autom
 | Retry | Identical inputs do not create duplicate facts or captures |
 | Partial failure | Failed/unreadable inputs stay pending; run does not claim complete coverage |
 | Unavailable history | Review reports its source gap rather than inventing discussion contents |
-| OneDrive | Harmless note and reply survive a real second-device/connector round trip |
+| Chosen shared drive | Harmless note and reply survive a real second-device/connector round trip |
 | Scheduler | Real task settings and next run are read back; manual test and observed scheduled run are distinguished |
 | Forget | Active and pending copies are addressed; limitations in backups/external histories are explained |
 

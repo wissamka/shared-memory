@@ -1,6 +1,6 @@
 # Harness startup adapters
 
-Use one canonical vault. Each device gets a small instruction block pointing to its actual local path plus the same OneDrive-relative locator. Read the canonical rules on every memory-dependent session; do not maintain independent personal facts in each harness file.
+Use one canonical vault. Each device gets a small instruction block pointing to its actual local path plus the same shared-drive-relative locator. Read the canonical rules on every memory-dependent session; do not maintain independent personal facts in each harness file.
 
 | Harness | Entry point | Scope / verification |
 |---|---|---|

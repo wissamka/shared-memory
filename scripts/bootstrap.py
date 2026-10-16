@@ -9,7 +9,7 @@ import sys
 from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
-from common import create_once, digest, encoded, note, provenance, safe_path
+from common import cli_encoding, create_once, digest, encoded, note, provenance, safe_path, storage
 
 PACKAGE = Path(__file__).resolve().parents[1]
 MARKER = '.shared-memory-install.json'
@@ -20,10 +20,15 @@ LISTS = ('topics', 'communication_preferences', 'document_preferences', 'voice_r
 
 
 def validate(c):
+    if not isinstance(c, dict):
+        raise ValueError('Configuration must be an object')
     for key in ('preferred_name', 'role', 'goal', 'timezone', 'vault_path'):
         if not isinstance(c.get(key), str) or not c[key].strip():
             raise ValueError(f'{key} must be a nonempty string')
     provenance(c.get('provenance'))
+    storage(c)
+    if not Path(c['vault_path']).expanduser().is_absolute():
+        raise ValueError('vault_path must be absolute (or start with ~)')
     ZoneInfo(c['timezone'])
     for key in LISTS:
         if not isinstance(c.get(key, []), list) or any(not isinstance(x, str) for x in c.get(key, [])):
@@ -48,6 +53,8 @@ def validate(c):
             raise ValueError('Unsupported harness target')
         if not isinstance(target.get('path'), str) or not target['path'].strip():
             raise ValueError('Each harness target needs a path')
+        if not Path(target['path']).expanduser().is_absolute():
+            raise ValueError('Harness target paths must be absolute (or start with ~)')
 
 
 def bullets(items, pending='Not yet specified.'):
@@ -55,9 +62,10 @@ def bullets(items, pending='Not yet specified.'):
 
 
 def startup(c, root):
+    shared = storage(c)
     return (f'{BEGIN}\n## Shared memory\n\n'
-            f'Canonical vault on this device: `{root}`. OneDrive-relative locator: '
-            f'`{c.get("onedrive_relative_path", "not configured")}`. Resolve the actual path or '
+            f'Canonical vault on this device: `{root}`. Storage provider: `{shared["provider"]}`. Shared-drive-relative locator: '
+            f'`{shared["relative_path"] or "not configured"}`. Resolve the actual path or '
             'authenticated connector on another host; never assume this machine path exists there.\n\n'
             'Before memory-dependent work read the vault rules.md, AGENTS.md, index.md, recent log.md '
             'and relevant Personal/Preferences.md/project handoff. Apply its '
@@ -72,6 +80,7 @@ def startup(c, root):
 
 def build(c, root, now):
     editor = c['provenance']
+    shared = storage(c)
     files = {}
 
     def add(path, body, kind='overview', description=None):
@@ -150,7 +159,7 @@ def build(c, root, now):
         'Manual test: pending. Observed unattended run: pending. Notification preference: not specified.\n\n'
         '[Prompt](Daily%20review%20prompt.md) · [Setup procedure](../Procedures/shared-memory/references/scheduling.md)', 'handoff')
     add('Automation/Daily review prompt.md', '# Daily review prompt\n\n'
-        f'Vault-relative cloud locator: `{c.get("onedrive_relative_path", "not configured")}`. '
+        f'Storage provider: `{shared["provider"]}`. Shared-drive-relative locator: `{shared["relative_path"] or "not configured"}`. '
         f'Timezone: `{c["timezone"]}`. Resolve the actual local or connector path for this host.\n\n'
         + (PACKAGE / 'assets/daily-prompt.md').read_text(encoding="utf-8"), 'procedure')
     add('Automation/Startup instructions.md', '# Startup instructions for other interfaces\n\n'
@@ -158,7 +167,7 @@ def build(c, root, now):
         'Read rules.md, AGENTS.md, index.md, recent log.md and the relevant profile and project notes. '
         'Apply Procedures/shared-memory/SKILL.md for capture, recall and daily synthesis. '
         'File access and instruction loading must be tested in a fresh session.\n\n'
-        f'Cloud-relative locator: `{c.get("onedrive_relative_path", "not configured")}`.\n\n'
+        f'Storage provider: `{shared["provider"]}`. Shared-drive-relative locator: `{shared["relative_path"] or "not configured"}`.\n\n'
         '[Harness guidance](../Procedures/shared-memory/references/harnesses.md)', 'schema')
     for folder in ('Topics', 'Projects', 'People', 'Sessions', 'RAW', '_Inbox'):
         add(f'{folder}/Overview.md', f'# {folder}\n\n'
@@ -173,9 +182,9 @@ def build(c, root, now):
         f'Model note: {editor.get("model_note", "")}. Source: {editor["chat_reference"]}.\n\n'
         'Created vault structure, personal preferences and reusable procedures from the setup configuration. '
         'No imported sessions, cloud synchronization or scheduler run verified.\n', 'log')
-    for relative in ('SKILL.md', 'agents/openai.yaml', 'LICENSE'):
+    for relative in ('SKILL.md', 'agents/openai.yaml', 'LICENSE', 'README.md', 'install.py'):
         files['Procedures/shared-memory/' + relative] = (PACKAGE / relative).read_bytes()
-    for folder in ('references', 'scripts', 'assets'):
+    for folder in ('references', 'scripts', 'assets', 'reports'):
         for path in sorted((PACKAGE / folder).glob('*')):
             if path.is_file() and path.suffix in ('.md', '.py', '.json'):
                 files['Procedures/shared-memory/' + str(path.relative_to(PACKAGE))] = path.read_bytes()
@@ -204,21 +213,22 @@ def build(c, root, now):
     catalog = '# Catalog\n\n' + '\n'.join(f'- [{p}]({quote(p)})' for p in sorted(files)
         if p.endswith('.md'))
     add('index.md', catalog, 'index')
-    files['.memory-state/config.json'] = encoded({'version': 1, 'timezone': c['timezone']})
+    files['.memory-state/config.json'] = encoded({'version': 1, 'timezone': c['timezone'], 'storage': shared})
     return files
 
 
 def plan(c):
     validate(c)
     root = safe_path(c['vault_path'])
-    if root == PACKAGE or root.is_relative_to(PACKAGE) or PACKAGE.is_relative_to(root):
+    installed_copy = PACKAGE == root / 'Procedures/shared-memory' and (root / MARKER).is_file()
+    if root == PACKAGE or root.is_relative_to(PACKAGE) or (PACKAGE.is_relative_to(root) and not installed_copy):
         raise ValueError('Keep private vault and public skill repository in separate directories')
     marker = safe_path(root / MARKER)
     fingerprint = digest(encoded(c))
     existing = marker.exists()
     if existing:
         state = json.loads(marker.read_text(encoding="utf-8"))
-        if state.get('version') != 1 or state.get('config_sha256') != fingerprint:
+        if not isinstance(state, dict) or state.get('version') != 1 or state.get('config_sha256') != fingerprint:
             raise ValueError('Different existing installation; integrate manually or choose a new vault')
         now = state['created_at']
     else:
@@ -242,6 +252,8 @@ def plan(c):
     hook = startup(c, root).encode()
     for target in c.get('harness_targets', []):
         path = safe_path(target['path'])
+        if path.is_relative_to(PACKAGE):
+            raise ValueError('Do not put private harness bindings in the distributable skill package')
         if path.is_relative_to(root) or path in targets:
             raise ValueError('Harness targets must be distinct files outside the vault')
         targets.add(path)
@@ -289,6 +301,7 @@ def install(c, apply=False, preview=False):
 
 
 def main():
+    cli_encoding()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', required=True)
     parser.add_argument('--apply', action='store_true')
