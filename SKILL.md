@@ -18,6 +18,7 @@ Build memory the owner can read, correct, move and reuse. This skill is self-con
 | Review today / consolidate memory / dream mode | [Daily synthesis](references/daily-review.md) |
 | Schedule daily synthesis | [Scheduling](references/scheduling.md); configure a real scheduler and verify it |
 | Connect another harness / use a shared drive | [Harnesses](references/harnesses.md) and [shared storage](references/shared-storage.md) |
+| Install, update or remove the plugin | [Plugin lifecycle](references/plugins.md); distinguish host package updates from the canonical procedure in an existing vault |
 
 ## Shared operating contract
 
@@ -34,6 +35,8 @@ Persist useful memory at meaningful milestones rather than relying only on a fin
 Coordinate one writer for maintained notes; unique session captures may be written separately. Reread before focused edits and use conditional writes when available. A local lock or synced file is not a distributed lock. Preserve pending changes on collisions. Preserve historical logs and source evidence during routine maintenance; user-directed forgetting is handled separately.
 
 ## Installation completion
+
+When invoked by a plugin setup action, begin the interview and vault setup below. The plugin is already installed; do not install another standalone copy. For an existing vault, compare the packaged `skill-files.json` version with its canonical procedure and report any pending upgrade; follow the plugin lifecycle procedure when asked to upgrade. A package update is not permission to overwrite customized memory.
 
 Reuse known answers. Ask only the missing questions that affect installation, permissions or personalization. Preview concrete paths and changes; proceed within authorization already given. The bootstrap script defaults to preview and requires `--apply` to write. Never run the example configuration as a real person's profile.
 

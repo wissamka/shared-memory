@@ -9,7 +9,8 @@ import sys
 from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
-from common import cli_encoding, create_once, digest, encoded, note, provenance, safe_path, storage
+from common import cli_encoding, contains_path, create_once, digest, distribution_roots, encoded, note, provenance, safe_path, same_path, storage
+from install_skill import bundle
 
 PACKAGE = Path(__file__).resolve().parents[1]
 MARKER = '.shared-memory-install.json'
@@ -182,12 +183,8 @@ def build(c, root, now):
         f'Model note: {editor.get("model_note", "")}. Source: {editor["chat_reference"]}.\n\n'
         'Created vault structure, personal preferences and reusable procedures from the setup configuration. '
         'No imported sessions, cloud synchronization or scheduler run verified.\n', 'log')
-    for relative in ('SKILL.md', 'agents/openai.yaml', 'LICENSE', 'README.md', 'install.py'):
-        files['Procedures/shared-memory/' + relative] = (PACKAGE / relative).read_bytes()
-    for folder in ('references', 'scripts', 'assets', 'reports'):
-        for path in sorted((PACKAGE / folder).glob('*')):
-            if path.is_file() and path.suffix in ('.md', '.py', '.json'):
-                files['Procedures/shared-memory/' + str(path.relative_to(PACKAGE))] = path.read_bytes()
+    for relative, data in bundle(PACKAGE).items():
+        files['Procedures/shared-memory/' + relative] = data
     files['Procedures/write-in-my-voice/SKILL.md'] = (
         '---\nname: write-in-my-voice\ndescription: Draft and revise in this owner\'s approved voice using current preferences and selected evidence.\n'
         'metadata:\n' + ''.join('  last_edited_' + k + ': ' + json.dumps(v) + '\n'
@@ -220,8 +217,9 @@ def build(c, root, now):
 def plan(c):
     validate(c)
     root = safe_path(c['vault_path'])
-    installed_copy = PACKAGE == root / 'Procedures/shared-memory' and (root / MARKER).is_file()
-    if root == PACKAGE or root.is_relative_to(PACKAGE) or (PACKAGE.is_relative_to(root) and not installed_copy):
+    installed_copy = same_path(PACKAGE, root / 'Procedures/shared-memory') and (root / MARKER).is_file()
+    packages = distribution_roots(PACKAGE)
+    if any(contains_path(p, root) or (contains_path(root, p) and not installed_copy) for p in packages):
         raise ValueError('Keep private vault and public skill repository in separate directories')
     marker = safe_path(root / MARKER)
     fingerprint = digest(encoded(c))
@@ -252,9 +250,9 @@ def plan(c):
     hook = startup(c, root).encode()
     for target in c.get('harness_targets', []):
         path = safe_path(target['path'])
-        if path.is_relative_to(PACKAGE):
+        if any(contains_path(p, path) for p in packages):
             raise ValueError('Do not put private harness bindings in the distributable skill package')
-        if path.is_relative_to(root) or path in targets:
+        if contains_path(root, path) or any(same_path(path, p) for p in targets):
             raise ValueError('Harness targets must be distinct files outside the vault')
         targets.add(path)
         before = path.read_bytes() if path.exists() else None

@@ -35,6 +35,37 @@ def safe_path(value):
     return path.resolve()
 
 
+def same_path(first, second):
+    """Compare existing file identity as well as spelling (case aliases/hard links)."""
+    first, second = Path(first), Path(second)
+    return first == second or (first.exists() and second.exists() and first.samefile(second))
+
+
+def contains_path(root, path):
+    """Containment including aliases of existing ancestors for new descendants."""
+    root, path = Path(root), Path(path)
+    return any(same_path(root, ancestor) for ancestor in (path, *path.parents))
+
+
+def distribution_roots(package):
+    """Protect enclosing plugin/distribution roots, not just a nested skill."""
+    package = Path(package)
+    roots = [package]
+    in_plugin = False
+    for parent in package.parents:
+        plugin = ((parent / 'plugin.json').is_file() or
+                  (parent / '.claude-plugin/plugin.json').is_file() or
+                  (parent / '.codex-plugin/plugin.json').is_file())
+        in_plugin = in_plugin or plugin
+        source = (parent / 'skill-files.json').is_file() and (parent / 'SKILL.md').is_file()
+        repository = in_plugin and (parent / '.git').exists()
+        if plugin or source or repository:
+            roots.append(parent)
+        if repository:
+            break
+    return roots
+
+
 def within(root, relative):
     if Path(relative).is_absolute() or '..' in Path(relative).parts:
         raise ValueError('Expected a relative path within the vault')

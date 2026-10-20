@@ -1,0 +1,24 @@
+{
+  "source_id": "fictional-session-1:turn-3:preference",
+  "source_date": "2030-04-02T16:30:00+01:00",
+  "session_id": "fictional-session-1",
+  "harness": "Example harness",
+  "assistant": "Example assistant",
+  "model": "unknown",
+  "model_note": "Fictional fixture; no actual model",
+  "agent": "example-agent",
+  "chat_reference": "unavailable",
+  "title": "Document length preference",
+  "text": "The user said: for decision briefs, put the recommendation and evidence links on one page.",
+  "status": "reported",
+  "coverage": "Selected visible user statement; not a full transcript",
+  "captured_by": {
+    "assistant": "Example assistant",
+    "harness": "Example harness",
+    "model": "unknown",
+    "model_note": "Fictional fixture; no actual model",
+    "agent": "example-agent",
+    "session_id": "fictional-session-1",
+    "chat_reference": "unavailable"
+  }
+}

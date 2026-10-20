@@ -1,29 +1,37 @@
 #!/usr/bin/env python3
 """Install this complete skill into selected harnesses. No network or credentials."""
 import argparse
+import json
 from pathlib import Path
 import sys
 
-from common import cli_encoding, create_once, digest, encoded, safe_path
+from common import cli_encoding, contains_path, create_once, digest, distribution_roots, encoded, safe_path, same_path
 
 PACKAGE = Path(__file__).resolve().parents[1]
 MARKER = '.shared-memory-skill-install.json'
 
 
 def bundle(source=PACKAGE):
-    """Explicit distribution allowlist; never copy vaults, private files or Git."""
+    """Copy only reviewed filenames, independently of Git or working-tree extras."""
+    source = Path(source)
+    manifest_path = safe_path(source / 'skill-files.json')
+    manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+    names = manifest.get('files') if isinstance(manifest, dict) else None
+    if (not isinstance(names, list) or not names or
+            any(not isinstance(p, str) for p in names) or
+            len({p.casefold() for p in names}) != len(names)):
+        raise ValueError('Invalid skill distribution manifest')
+    if not {'SKILL.md', 'LICENSE', 'skill-files.json'}.issubset(names):
+        raise ValueError('Incomplete skill distribution manifest')
     files = {}
-    for rel in ('SKILL.md', 'LICENSE', 'README.md', 'install.py', 'agents/openai.yaml'):
-        path = source / rel
-        if path.exists():
-            files[rel] = safe_path(path).read_bytes()
-        elif rel in ('SKILL.md', 'LICENSE'):
+    for rel in names:
+        if (Path(rel).is_absolute() or '..' in Path(rel).parts or '\\' in rel
+                or rel.endswith('.local.json') or any(p.startswith('.') for p in Path(rel).parts)):
+            raise ValueError(f'Unsafe distribution filename: {rel}')
+        path = safe_path(source / rel)
+        if not path.is_file():
             raise ValueError(f'Incomplete skill bundle: {rel}')
-    for directory, suffixes in (('scripts', ('.py',)), ('references', ('.md',)),
-                                ('reports', ('.md',)), ('assets', ('.md', '.json'))):
-        for path in sorted((source / directory).glob('*')):
-            if path.is_file() and path.suffix in suffixes:
-                files[path.relative_to(source).as_posix()] = safe_path(path).read_bytes()
+        files[rel] = path.read_bytes()
     return files
 
 
@@ -40,12 +48,12 @@ def install(targets, apply=False, source=PACKAGE):
     manifest = encoded({'version': 1, 'files': {p: digest(data) for p, data in files.items()}})
     changes = []
     normalized = [safe_path(p) for p in targets]
-    if len(set(normalized)) != len(normalized):
+    if any(same_path(p, q) for i, p in enumerate(normalized) for q in normalized[i+1:]):
         raise ValueError('Duplicate installation destination')
     for root in normalized:
-        if root == source or root.is_relative_to(source) or source.is_relative_to(root):
+        if any(contains_path(p, root) or contains_path(root, p) for p in distribution_roots(source)):
             raise ValueError('Installation destination must be separate from the downloaded package')
-        if any(root != other and (root.is_relative_to(other) or other.is_relative_to(root)) for other in normalized):
+        if any(root != other and (contains_path(other, root) or contains_path(root, other)) for other in normalized):
             raise ValueError('Installation destinations overlap')
         marker = safe_path(root / MARKER)
         if root.exists() and (not root.is_dir() or (any(root.iterdir()) and not marker.is_file())):

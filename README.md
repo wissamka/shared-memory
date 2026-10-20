@@ -32,7 +32,27 @@ flowchart LR
 
 Daily review covers authorized sources the selected runtime can actually access. Local-only conversations, unavailable accounts and incomplete exports remain explicit coverage gaps. Session capture at milestones reduces dependence on proprietary chat-history formats. A shared drive synchronizes files; it does not grant another AI tool access or automatically install a scheduler.
 
-## Install the skill
+## Install the plugin
+
+For **ChatGPT desktop / Codex**, use the native plugin installer:
+
+```sh
+codex plugin marketplace add wissamka/shared-memory
+codex plugin add shared-memory@shared-memory
+```
+
+For **Claude Code**, run these inside Claude:
+
+```text
+/plugin marketplace add wissamka/shared-memory
+/plugin install shared-memory@shared-memory
+```
+
+Start a fresh session and ask **“Use Shared Memory AI Second Brain to set up my memory.”** In Claude Code you can invoke `/shared-memory:shared-memory`. The agent asks which shared drive you use and guides the setup. You do not need to download or copy skill files yourself.
+
+These install from our public GitHub marketplace. The plugin is not yet listed in the vendors' reviewed public directories. [Installation, updates and removal](references/plugins.md) explains requirements and the separate update of the procedure inside an existing vault.
+
+### Offline / standalone skill installation
 
 Download and extract this repository, or clone it. From that folder, run the interactive installer:
 
@@ -83,6 +103,6 @@ python3 scripts/check_package.py
 
 Tests use fictional records and temporary directories. They exercise preservation, duplicate capture, failed review receipts, day boundaries and source filtering. They cannot prove a particular user's cloud sync, model quality or scheduler availability. See [acceptance tests](references/acceptance.md) for the live installation checks.
 
-The [four-pass verification record](reports/verification.md) documents the 64-test suite, defects fixed, privacy review and limits of testing.
+The [verification record](reports/verification.md) documents the original four-pass testing, plugin validation, defects fixed and limits of testing.
 
 MIT licensed. No private source vault, transcript, personal contact information or credentials are distributed with this package.

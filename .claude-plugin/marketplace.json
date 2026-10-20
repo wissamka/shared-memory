@@ -1,0 +1,17 @@
+{
+  "name": "shared-memory",
+  "metadata": {
+    "description": "Shared Memory AI Second Brain: a portable, personal memory workflow."
+  },
+  "owner": {
+    "name": "Shared Memory contributors"
+  },
+  "plugins": [
+    {
+      "name": "shared-memory",
+      "source": "./plugins/shared-memory",
+      "description": "A personal memory vault with sourced notes, preferences and daily review.",
+      "category": "productivity"
+    }
+  ]
+}

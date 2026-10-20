@@ -1,0 +1,36 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "author": {
+    "name": "Shared Memory contributors"
+  },
+  "description": "Build a personal memory vault with sourced notes, preferences and daily review.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "category": "Productivity",
+        "defaultPrompt": [
+          "Set up my shared memory. Ask which shared drive I use and how I like to work."
+        ],
+        "developerName": "Shared Memory contributors",
+        "displayName": "Shared Memory AI Second Brain",
+        "shortDescription": "Personal memory across agents, sessions and devices",
+        "websiteURL": "https://github.com/wissamka/shared-memory"
+      },
+      "onboardingSkill": "./skills/shared-memory/SKILL.md"
+    }
+  },
+  "homepage": "https://github.com/wissamka/shared-memory",
+  "keywords": [
+    "memory",
+    "obsidian",
+    "productivity"
+  ],
+  "license": "MIT",
+  "name": "shared-memory",
+  "repository": "https://github.com/wissamka/shared-memory",
+  "version": "0.2.0"
+}

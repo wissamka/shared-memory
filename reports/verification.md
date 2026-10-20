@@ -1,3 +1,18 @@
+# Plugin distribution — version 0.2.0
+
+The native plugin package uses the portable Agent Plugins manifest, a Claude compatibility manifest, and separate Codex/Claude GitHub marketplace catalogs. Both hosts discover the same bundled skill. Plugin files are generated from a reviewed filename list; continuous integration rejects a stale generated copy.
+
+Validation on October 19, 2026:
+
+- Full suite: **70 tests passed** on macOS, including packaged bootstrap, reproducible archive, ignored private-file exclusion and case-alias separation.
+- Codex CLI **0.162.1**, isolated unauthenticated profile: local marketplace registration, install, enabled inventory, update to a synthetic next version, uninstall and catalog removal passed.
+- Claude Code **2.1.226**, isolated unauthenticated profile: the same lifecycle passed. Native component inspection found one `shared-memory` skill, zero hooks, zero agents and zero MCP servers. Native plugin and marketplace validation passed.
+- Test profiles and fictional private memory remained separate; plugin removal preserved the fictional memory. Existing user plugin settings, real vaults and schedulers were not used.
+- Explicit distribution filenames now govern both standalone installation and the canonical vault copy. A misplaced ignored local JSON file and private draft were excluded in regression tests.
+- Filesystem identity checks now reject existing case aliases of the public package during vault creation, harness binding and standalone installation.
+
+Native installer tests exercise package loading and updates, not model synthesis. A host update still requires a separate reviewed update of the canonical procedure in an existing vault. The documented upgrade is agent-guided; automatic migration, fresh model-driven recall, real cloud synchronization and observed unattended daily review remain unverified. Public directory admission and Cowork upload compatibility are not claimed. The earlier four-pass record below remains historical evidence.
+
 # Verification record — 2026-10-16
 
 Four distinct local test passes were completed using fictional records and temporary folders. The final regression suite contains **64 tests**; all passed, including a run with ASCII as the inherited pipe encoding to check that the CLIs explicitly emit UTF-8.

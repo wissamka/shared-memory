@@ -2,6 +2,8 @@
 
 ## Install the skill into an agent
 
+Prefer the [native plugin route](plugins.md) for public installation. The following installer is the offline/standalone fallback. If this skill was loaded from an installed plugin, skip installation and proceed to the interview and private-vault bootstrap.
+
 Run `python3 install.py` from the downloaded package (Windows: `py install.py`). The interactive installer asks for Codex, Claude Code, both or a custom folder, previews destinations and offers to install. It copies the full skill with its dependencies; no manual copy-paste is needed. For scripted use, run `python3 install.py --harness codex claude --apply`, or supply one or more `--target` absolute skill folders. Without `--apply`, explicit destinations are previewed only.
 
 The installer preserves nonempty unmanaged folders, edited files and different versions. An identical rerun repairs missing files and resumes interrupted installation. To upgrade, review the new version and the old folder's changes, then select a new folder or make a deliberate replacement outside this helper; it never silently deletes an existing skill. It requires Python 3.10+ but no third-party packages. Install `tzdata` separately if vault bootstrap needs a timezone database on your platform.

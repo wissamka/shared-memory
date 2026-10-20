@@ -1,0 +1,16 @@
+{
+  "author": {
+    "name": "Shared Memory contributors"
+  },
+  "description": "Build a personal memory vault with sourced notes, preferences and daily review.",
+  "homepage": "https://github.com/wissamka/shared-memory",
+  "keywords": [
+    "memory",
+    "obsidian",
+    "productivity"
+  ],
+  "license": "MIT",
+  "name": "shared-memory",
+  "repository": "https://github.com/wissamka/shared-memory",
+  "version": "0.2.0"
+}
