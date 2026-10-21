@@ -1,3 +1,28 @@
+# Reliability and optional voice archive — version 0.3.0
+
+Local validation on October 20, 2026 used fictional records and isolated temporary directories. Four distinct passes completed after integrating the audit fixes:
+
+| Pass | Coverage | Result |
+|---|---|---|
+| 1. Privacy and review safety | Source/session suppression, interrupted forgetting, stale reviews, deferred outcomes and approved voice evidence | 41 tests passed |
+| 2. Collection and readiness | Missed days, partial inventories, reimport suppression, evidence staleness, binding drift and manual scheduling mode | 25 tests passed |
+| 3. Installation and recovery | Storage choices, new harnesses, atomic startup edits, interrupted writes and source formats | 40 tests passed |
+| 4. Complete packaged regression | Full suite, including standalone ZIP installation, canonical procedure, generated plugin and all prior behavior | **151 tests passed** |
+
+Package link/syntax/private-pattern checks, generated-plugin equality and skill-format validation also passed. The package still uses Python 3.10+ and the standard library; the external skill-format validator's YAML parser is a test-tool dependency only.
+
+The fixes enforce hashed suppression before cleanup, keep collection coverage separate from review completion, reject stale overlapping receipts, allow explicit deferred inputs, surface malformed inputs, and preserve existing startup text during new harness connections. The new read-only readiness report shows what was inspected and what is supported only by dated agent observations. Explicit manual-only setups do not require scheduler checks.
+
+The optional separate chat archive preserves selected visible messages and truthful provenance. When an interface hides original identifiers, those remain unknown and separate stable capture identifiers support overlap handling. Only author-attested user messages can become draft writing examples; exact owner approval activates them. Known knowledge-vault suppressions immediately exclude matching examples; deleting archive copies still requires its scoped cleanup. No model training, training export or service upload is implemented.
+
+An actual agent created a fictional local installation, promoted sourced preferences/project status and completed a manual daily review. A separate agent with no inherited conversation read the generated startup file, recalled the preference with sources, kept an unapproved project unapproved despite a supplier memo containing hostile instructions, saved an explicit format correction, and performed scoped forgetting. Same-source reimport returned suppressed; three unrelated original captures stayed byte-identical. Invalidating the affected mixed review receipt correctly returned remaining inputs to pending.
+
+That exercise found manual-only scheduling placeholders and one missing voice-reference file in an intermediate bundle snapshot. Explicit manual mode and final allowlist integration fixed those issues; regression/package link checks cover the final bundle. The exercise verifies independent explicit instruction loading, not native automatic startup loading across every harness. It does not establish all-provider capture, every shared-drive service, an observed unattended schedule, large-vault retrieval quality or owner-specific voice calibration. Test artifacts stayed private and fictional.
+
+The [completeness audit](completeness-audit.md) and [roadmap](roadmap.md) retain remaining work: reviewed automatic canonical-procedure upgrades/rollback, complete disconnection/recovery, and broader real-installation acceptance. Malformed or missing source evidence still blocks review certification until repaired. Cloud synchronization and distributed concurrent writes are not established by these local tests.
+
+---
+
 # Plugin distribution — version 0.2.0
 
 The native plugin package uses the portable Agent Plugins manifest, a Claude compatibility manifest, and separate Codex/Claude GitHub marketplace catalogs. Both hosts discover the same bundled skill. Plugin files are generated from a reviewed filename list; continuous integration rejects a stale generated copy.

@@ -47,7 +47,19 @@ Without samples, use explicit preferences and mark voice calibration pending. Do
 
 Never request credentials. Explain that local transcripts may contain sensitive details; broad history import is optional and requires an explicit scope. The script is not a comprehensive personal-data or secret detector.
 
-## 6. Installation and daily review
+## 6. Optional visible-chat archive and owner-message corpus
+
+Main memory setup works without either option. Offer these separately; do not infer consent from choosing daily synthesis or voice calibration:
+
+- Would you like a separate archive of accessible visible user/assistant discussion, or only the curated memory and selected session summaries?
+- If you choose an archive, which conversations, starting date, storage location and retention/exclusions are authorized? Reuse the shared-drive choice if already known; do not assume the archive belongs inside the curated vault.
+- May selected messages that you authored form a private writing-style corpus, with proposed style rules and examples submitted for your approval?
+
+Explain that “full” means the accessible visible discussion within the selected scope. Preserve its wording and order, metadata and legitimate repeats; identify missing portions and any unverified cloud checkpoint. Do not export hidden reasoning, internal instructions, tool payloads, secrets or inaccessible history. Prospective capture is the default; older history requires its own explicit scope. No universal recorder or account-wide import is installed.
+
+Keep the owner's own words distinct from assistant replies, quotations and externally authored samples. An archive is source evidence; the corpus is a selected style source; the approved style guide and examples govern drafting. These steps do not train or fine-tune a model. Follow [voice and archive guidance](voice.md) for formats, capture checks, approval and deletion. Skipping either option must not block vault setup, explicit memory capture or the ordinary preference interview.
+
+## 7. Installation and daily review
 
 - Do you already use OneDrive, Google Drive, another shared-drive solution (such as Dropbox, iCloud or a network share), or do you want local storage only?
 - Which operating system, account and actual shared folder should we use? Is there an existing Obsidian vault to integrate? For cloud storage, is the folder available locally or only through a connector?

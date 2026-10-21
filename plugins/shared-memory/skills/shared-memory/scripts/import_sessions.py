@@ -9,6 +9,8 @@ from zoneinfo import ZoneInfo
 
 from common import cli_encoding, digest, encoded, provenance, safe_path, timestamp
 from memory import capture, config
+from collection import load_source, pending, record as record_collection
+from suppression import is_suppressed
 
 
 def text_blocks(content, allowed):
@@ -18,6 +20,19 @@ def text_blocks(content, allowed):
         return ''
     return '\n'.join(item['text'] for item in content if isinstance(item, dict)
                      and item.get('type') in allowed and isinstance(item.get('text'), str))
+
+
+def unsupported_content(content, allowed):
+    """Flag missing visible text without ever extracting reasoning or tool data."""
+    if isinstance(content, str):
+        return False
+    if not isinstance(content, list):
+        return True
+    excluded = {'thinking', 'redacted_thinking', 'tool_use', 'tool_result'}
+    return any(not isinstance(item, dict) or
+               (item.get('type') not in excluded and
+                (item.get('type') not in allowed or not isinstance(item.get('text'), str)))
+               for item in content)
 
 
 def extract(path, kind, start, end, editor):
@@ -59,8 +74,8 @@ def extract(path, kind, start, end, editor):
                     gaps.append(f'{path.name}:{line_number}: assistant channel unrecognized; omitted')
                 continue  # Never extract analysis, tool messages or uncertain channels.
             content = text_blocks(payload.get('content'), ('input_text', 'output_text', 'text'))
-            if not content and payload.get('content'):
-                gaps.append(f'{path.name}:{line_number}: message has no supported text; inspect attachments/format')
+            if unsupported_content(payload.get('content'), ('input_text', 'output_text', 'text')):
+                gaps.append(f'{path.name}:{line_number}: unsupported visible content; inspect attachments/format')
             source_model = model if role == 'assistant' else 'unknown'
         else:
             role = event.get('type')
@@ -68,6 +83,8 @@ def extract(path, kind, start, end, editor):
             if not isinstance(message, dict) or role not in ('user', 'assistant') or event.get('isMeta'):
                 continue
             content = text_blocks(message.get('content'), ('text',))
+            if unsupported_content(message.get('content'), ('text',)):
+                gaps.append(f'{path.name}:{line_number}: unsupported visible content; inspect attachments/format')
             session = identifier(event.get('sessionId')) if event.get('sessionId') else session
             source_model = identifier(message.get('model')) if role == 'assistant' else 'unknown'
         if not content.strip():
@@ -102,16 +119,22 @@ def extract(path, kind, start, end, editor):
     return records, gaps
 
 
-def collect(kind, source, root, day, editor, apply=False):
+def collect(kind, source, root, day, editor, apply=False, source_id=None):
     provenance(editor)
     source = safe_path(source)
     if not source.is_dir():
         raise ValueError('Source must be the explicitly authorized directory')
     zone = ZoneInfo(config(root)['timezone'])
     target = date.fromisoformat(day)
+    if kind not in ('codex', 'claude'):
+        raise ValueError('Unsupported source kind')
+    if source_id is not None:
+        registered = load_source(root, source_id)
+        if registered['kind'] != kind or target < date.fromisoformat(registered['since']):
+            raise ValueError('Import does not match the registered source scope')
     start = datetime.combine(target, time.min, zone)
     end = datetime.combine(target + timedelta(days=1), time.min, zone)
-    count, gaps = 0, []
+    count, saved, suppressed, gaps = 0, 0, 0, []
     paths = sorted(source.rglob('*.jsonl'))
     if not paths:
         gaps.append('No JSONL files found; source coverage unverified')
@@ -121,14 +144,47 @@ def collect(kind, source, root, day, editor, apply=False):
             records, missing = extract(path, kind, start, end, editor)
             gaps.extend(missing)
             for record in records:
-                if apply:
-                    capture(root, record)
                 count += 1
-        except (ValueError, OSError) as exc:
+                if is_suppressed(root, record):
+                    suppressed += 1
+                    continue
+                if apply:
+                    result = capture(root, record)
+                    if result.get('status') == 'suppressed':
+                        suppressed += 1
+                    else:
+                        saved += 1
+        except (ValueError, OSError, KeyError, TypeError) as exc:
             gaps.append(f'{path.name}: {exc}')
-    return {'mode': 'applied' if apply else 'preview', 'files_examined': len(paths),
+    result = {'mode': 'applied' if apply else 'preview', 'files_examined': len(paths),
             'visible_messages': count, 'window_start': start.isoformat(), 'window_end': end.isoformat(),
+            'saved_messages': saved, 'skipped_suppressed': suppressed,
             'coverage_gaps': gaps, 'coverage': 'Selected local JSONL tree and recognized visible text only'}
+    if source_id is not None and apply:
+        result['collection_status'] = record_collection(root, source_id, day, result, editor)['status']
+    return result
+
+
+def collect_days(kind, source, root, through, editor, apply=False, source_id=None,
+                 since=None, catch_up=False):
+    end = date.fromisoformat(through)
+    if catch_up:
+        if not source_id or since:
+            raise ValueError('Catch-up requires a registered source ID and cannot combine with --since')
+        registered = load_source(root, source_id)
+        if registered['kind'] != kind:
+            raise ValueError('Source kind differs from its registration')
+        rows = pending(root, through)['sources']
+        days = next(row['next_dates'] for row in rows if row['source_id'] == source_id)
+    else:
+        first = date.fromisoformat(since) if since else end
+        if first > end:
+            raise ValueError('Start date must not follow the end date')
+        days = [(first + timedelta(days=n)).isoformat() for n in range((end - first).days + 1)]
+    reports = [{'date': day, **collect(kind, source, root, day, editor, apply, source_id)} for day in days]
+    return {'mode': 'applied' if apply else 'preview', 'days': reports,
+            'coverage_gaps': [f'{row["date"]}: {gap}' for row in reports for gap in row['coverage_gaps']],
+            'coverage': 'Registered bounded source only; review receipts do not replace collection evidence'}
 
 
 def main():
@@ -138,12 +194,20 @@ def main():
     parser.add_argument('--source', required=True)
     parser.add_argument('--vault', required=True)
     parser.add_argument('--date', required=True)
+    parser.add_argument('--since', help='Include every date from this day through --date')
+    parser.add_argument('--source-id', help='Registered collection source; persist coverage on apply')
+    parser.add_argument('--catch-up', action='store_true', help='Retry missing/partial days and late-arrival overlap')
     parser.add_argument('--editor', required=True)
     parser.add_argument('--apply', action='store_true')
     args = parser.parse_args()
     try:
-        result = collect(args.kind, args.source, safe_path(args.vault), args.date,
-                         json.loads(Path(args.editor).read_text(encoding="utf-8")), args.apply)
+        editor = json.loads(Path(args.editor).read_text(encoding='utf-8'))
+        if args.since or args.catch_up:
+            result = collect_days(args.kind, args.source, safe_path(args.vault), args.date,
+                                  editor, args.apply, args.source_id, args.since, args.catch_up)
+        else:
+            result = collect(args.kind, args.source, safe_path(args.vault), args.date,
+                             editor, args.apply, args.source_id)
         print(json.dumps(result, indent=2, ensure_ascii=False))
         return 2 if result['coverage_gaps'] else 0
     except (ValueError, OSError, KeyError, TypeError) as exc:

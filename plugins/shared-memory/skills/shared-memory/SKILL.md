@@ -14,10 +14,13 @@ Build memory the owner can read, correct, move and reuse. This skill is self-con
 | Set up my memory / install this system | [Interview](references/interview.md), then [installation](references/installation.md) |
 | Remember this / store this / save this decision | [Capture and recall](references/operations.md); save in this session |
 | What do you know about me? / change your style | Read the live personal profile and preferences; use the relevant interview questions |
+| Forget this / stop retaining this | [Forgetting](references/operations.md#forget-this); resolve scope, preview suppression and cleanup, then verify related notes |
+| Preserve my visible chats / learn my writing style | [Voice and optional archive](references/voice.md); establish separate archive/corpus scope and approved examples |
 | Resume / hand this off | Read the relevant project and Working/Handoff.md, then original sources as needed |
 | Review today / consolidate memory / dream mode | [Daily synthesis](references/daily-review.md) |
 | Schedule daily synthesis | [Scheduling](references/scheduling.md); configure a real scheduler and verify it |
-| Connect another harness / use a shared drive | [Harnesses](references/harnesses.md) and [shared storage](references/shared-storage.md) |
+| Is memory working? / check setup | [Readiness](references/readiness.md); report evidence, unknown checks and next actions |
+| Connect another harness / use a shared drive | [Harnesses](references/harnesses.md) and [shared storage](references/shared-storage.md); connect an existing vault without bootstrapping it again |
 | Install, update or remove the plugin | [Plugin lifecycle](references/plugins.md); distinguish host package updates from the canonical procedure in an existing vault |
 
 ## Shared operating contract
@@ -42,6 +45,6 @@ Reuse known answers. Ask only the missing questions that affect installation, pe
 
 Ask explicitly: **“Do you already use OneDrive, Google Drive, another shared-drive service, or would you prefer local storage only?”** Do not default to OneDrive or assume a subscription. Use the answer to select the account, actual synced/mounted folder or authenticated connector, offline availability, and per-device bindings. Read [shared storage](references/shared-storage.md) before choosing paths. If the answer is unknown, leave the storage choice pending; do not invent a synced location.
 
-Install the vault and selected harness entry points; configure authorized session sources; test one capture, one daily review and recall from a fresh harness session. If daily scheduling was requested, use the current harness's supported scheduler to create or update it, read back its settings, and record its identifier, timezone, next run and access tests. A generated prompt is **prepared**, not **scheduled**. An enabled job is not proof of a successful run.
+Install the vault and selected harness entry points; register authorized session sources and an explicit collection start date; test one capture, one daily review and recall from a fresh harness session. Offer the optional separate visible-chat archive and owner-message corpus only within the owner's selected scope. An archive is source evidence; a style guide uses approved rules/examples and does not train the underlying model. If daily scheduling was requested, use the current harness's supported scheduler to create or update it, read back its settings, and record its identifier, timezone, next run and access tests. A generated prompt is **prepared**, not **scheduled**. An enabled job is not proof of a successful run.
 
-Report completed checks and specific remaining access or scheduling gaps. Building this reusable package does not authorize activating a new job on its author's personal vault. Ordinary operation of the installed system does not authorize sending messages, publishing or changing access permissions.
+Use the readiness workflow to report completed checks and specific remaining access, collection, recall or scheduling gaps. Dream mode is agent-executed daily synthesis; naming or preparing it does not install a scheduler. Building this reusable package does not authorize activating a new job on its author's personal vault. Ordinary operation of the installed system does not authorize sending messages, publishing or changing access permissions.

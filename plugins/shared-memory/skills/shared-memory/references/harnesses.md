@@ -13,7 +13,21 @@ Use one canonical vault. Each device gets a small instruction block pointing to 
 
 The installer emits generic startup instructions under `Automation/Startup instructions.md` and can append a managed block to selected files via `harness_targets`. It refuses differing existing managed blocks. Preserve unrelated instructions. Attaching a vault folder does not itself load the rules or grant write permission.
 
-A global path such as `/Users/...` cannot be used unchanged on Windows or a cloud worker. Resolve the configured cloud-relative locator through the authenticated connector and read content, not just metadata. Verify a write/readback if editing is intended. Unavailable connectors are reported, with pending changes kept in an authorized local workspace.
+## Connect an additional local harness
+
+Use the actual existing vault path on this device and a supported startup target outside the vault. Do not change the bootstrap configuration and rerun it to add a device:
+
+```sh
+python3 scripts/connect_harness.py --vault /absolute/path/vault --kind claude --target /absolute/path/CLAUDE.md --editor /absolute/path/editor.local.json
+```
+
+This previews the connection. Add `--apply` to create the owned block and binding receipt. The helper reads the live capture mode, preserves surrounding instructions, verifies local readback and permits an identical rerun. It does not recreate personal notes, import sources or install a schedule. A different or partial existing owned block is preserved as a conflict; moving/replacing that binding still needs reviewed integration. Binding a new target on another device does not rewrite the old device's path.
+
+Test the new harness in a fresh session and record whether it actually loads the instructions and recalls a harmless sourced preference. A saved binding receipt proves a file operation, not instruction loading. See [readiness](readiness.md).
+
+## Verify access and scope
+
+A device-local absolute path cannot be used unchanged on another operating system or a cloud worker. Resolve the configured cloud-relative locator through the authenticated connector and read content, not just metadata. Verify a write/readback if editing is intended. Unavailable connectors are reported, with pending changes kept in an authorized local workspace.
 
 Check supported behavior when installing; products evolve. Reference documentation:
 

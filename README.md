@@ -11,11 +11,14 @@ The agent asks about your preferences and creates your system. You can skip pers
 ## What you get
 
 - A browsable vault with topic overviews, projects, people, decisions and open questions.
-- Personal profile, communication preferences, document preferences and a writing-voice procedure grounded in your own feedback.
+- Personal profile, communication preferences, document preferences and a writing-voice procedure grounded in approved feedback and examples.
+- An optional separate visible-chat archive and a corpus of your own messages for style calibration; these do not train the underlying model.
 - Source and discussion references, exact model/session attribution, and visible unresolved conflicts.
-- “Remember this,” “store this,” “correct this,” “what do you know about me?” and “resume” workflows.
-- Session captures, a daily synthesis prompt, per-input review receipts and missed-run catch-up.
-- Startup files for Codex, Claude Code, Gemini CLI, Cursor and GitHub Copilot, plus generic instructions for other interfaces.
+- “Remember this,” “store this,” “correct this,” “forget this,” “what do you know about me?” and “resume” workflows.
+- Session captures, a daily synthesis prompt, content-checked review receipts and registered-source catch-up after missed collection days.
+- Source/session suppression to keep forgotten evidence out of future helper imports, with separate review of derived notes and external copies.
+- Startup files for Codex, Claude Code, Gemini CLI, Cursor and GitHub Copilot, plus a helper to connect additional harnesses to an existing vault.
+- A [readiness report](references/readiness.md) that keeps unknown access, scheduling, recall and roaming checks visible.
 - Storage choice: OneDrive, Google Drive, another shared drive, or local only, with cross-device verification guidance.
 
 ```mermaid
@@ -76,11 +79,15 @@ Follow [the installation guide](references/installation.md) for a script-driven 
 
 The separate vault bootstrap creates a **new** vault and preserves existing startup instructions. It refuses unrelated nonempty vaults. Existing vaults need a reviewed integration, not an overwrite. Keep the public skill repository and private vault in separate directories. Examples are fictional; configuration, personal captures and generated vaults belong outside this repository.
 
-## Daily scheduling
+## Daily review and scheduling
+
+“Dream mode” means an agent reviews accessible sessions, extracts useful knowledge and updates sourced notes. It is a workflow, not a separately installed background process. [Daily review](references/daily-review.md) describes it.
 
 Ask the installing agent to schedule the generated `Automation/Daily review prompt.md` using its supported scheduler. The setup records the actual provider and task ID in `Automation/Schedule.md`. Native scheduling instructions for Codex, Claude and other environments are in [scheduling.md](references/scheduling.md).
 
 The file installer does not silently create an operating-system task, install a model runtime or purchase service usage. A scheduler must have durable access to both the configured session sources and the vault. The helper's `prepare` command creates a review manifest; it does not itself perform LLM synthesis.
+
+Optional [archive and voice calibration](references/voice.md) keep full accessible visible discussion separate from curated memory, then use selected owner-authored messages and approved examples for a style guide. Capture is prospective and scoped; hidden reasoning, tool payloads, secrets and inaccessible history are excluded. An archive containing gaps is reported as partial.
 
 ## Examples
 
@@ -94,6 +101,10 @@ The file installer does not silently create an operating-system task, install a 
 
 > Forget this preference and stop using it. Tell me where it was stored.
 
+> Check whether memory is ready, including missed source windows and whether the daily job has actually run.
+
+> Keep a separate archive of accessible visible chats and help me approve a style guide based on my own messages.
+
 ## Development and verification
 
 ```sh
@@ -103,6 +114,6 @@ python3 scripts/check_package.py
 
 Tests use fictional records and temporary directories. They exercise preservation, duplicate capture, failed review receipts, day boundaries and source filtering. They cannot prove a particular user's cloud sync, model quality or scheduler availability. See [acceptance tests](references/acceptance.md) for the live installation checks.
 
-The [verification record](reports/verification.md) documents the original four-pass testing, plugin validation, defects fixed and limits of testing.
+The [verification record](reports/verification.md) documents completed tests. The [completeness audit](reports/completeness-audit.md) and [roadmap](reports/roadmap.md) distinguish implemented work from remaining gates. Automatic canonical-procedure upgrades, full disconnection, and live cloud/scheduler end-to-end evidence remain separate work; test counts alone do not establish those outcomes.
 
 MIT licensed. No private source vault, transcript, personal contact information or credentials are distributed with this package.

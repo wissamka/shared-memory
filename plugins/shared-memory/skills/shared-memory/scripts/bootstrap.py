@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Preview or create a personal shared-memory vault; preserve existing content."""
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
 import re
+import stat
 import sys
+import tempfile
 from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
@@ -36,6 +39,8 @@ def validate(c):
             raise ValueError(f'{key} must be a list of strings')
     if c.get('capture_mode', 'explicit') not in ('explicit', 'durable'):
         raise ValueError('capture_mode must be explicit or durable')
+    if c.get('scheduling_mode', 'daily') not in ('daily', 'manual'):
+        raise ValueError('scheduling_mode must be daily or manual')
     topics = c.get('topics', [])
     if len(set(t.casefold() for t in topics)) != len(topics):
         raise ValueError('Topic names must be unique')
@@ -79,10 +84,28 @@ def startup(c, root):
             f'Capture mode: {c.get("capture_mode", "explicit")}.\n{END}\n')
 
 
+def binding_record(root, path, kind, hook, data, editor):
+    return {'version': 1, 'kind': kind, 'vault_path': str(root), 'target_path': str(path),
+            'block_sha256': digest(hook), 'target_sha256': digest(data), 'status': 'connected',
+            'connected_at': datetime.now(timezone.utc).isoformat(timespec='seconds'), 'editor': editor}
+
+
+def existing_binding(path, expected):
+    if not path.exists():
+        return None
+    prior = json.loads(path.read_text(encoding='utf-8'))
+    keys = ('version', 'kind', 'vault_path', 'target_path', 'block_sha256', 'status')
+    if not isinstance(prior, dict) or any(prior.get(k) != expected[k] for k in keys):
+        raise ValueError('Different existing binding record; preserve and review it')
+    provenance(prior.get('editor'))
+    return prior
+
+
 def build(c, root, now):
     editor = c['provenance']
     shared = storage(c)
     files = {}
+    daily = c.get('scheduling_mode', 'daily') == 'daily'
 
     def add(path, body, kind='overview', description=None):
         files[path] = note(body, kind, description or body.splitlines()[0].lstrip('# '), editor, now)
@@ -137,11 +160,16 @@ def build(c, root, now):
         + bullets(c.get('voice_sources', []), 'No samples selected.') + '\n\n'
         f'Setup source: {editor["chat_reference"]}; session {editor["session_id"]}; {now}. '
         'Keep observations tentative until endorsed. Do not invent experience or copy private facts into public writing.\n\n'
+        'Optional separate chat archive: not configured. Archive collection and use of the owner\'s words '
+        'as style evidence require explicit source selection. See '
+        '[voice archive workflow](../Procedures/shared-memory/references/voice.md). '
+        'Approved guides and examples are writing context; no model training is performed.\n\n'
         '[Writing procedure](../Procedures/write-in-my-voice/SKILL.md)', 'profile')
     add('Working/Handoff.md', '# Handoff\n\n## Objective\n\n' + c['goal'] + '\n\n## Completed\n\n'
-        'Local memory scaffolding. Cloud access, fresh-session recall and scheduling remain unverified.\n\n'
+        'Local memory scaffolding. Cloud access and fresh-session recall remain unverified.\n\n'
         '## Next action\n\nComplete the source registry, test a harmless capture and recall, and configure '
-        'the requested daily schedule.\n\n[Hub](../00-Hub.md)', 'handoff')
+        + ('the requested daily schedule.' if daily else 'manual review when requested; no schedule was requested.')
+        + '\n\n[Hub](../00-Hub.md)', 'handoff')
     add('Working/Conflicts.md', '# Unresolved conflicts\n\nNo conflicts recorded during setup. '
         'For each conflict record both claims, sources/dates, consequence, specific question and resolution evidence.\n\n'
         '[Hub](../00-Hub.md)', 'question')
@@ -152,13 +180,20 @@ def build(c, root, now):
         'Modes: milestone summaries, supported session API, or explicitly authorized visible-text export. '
         'Record pagination coverage, active-session cutoffs, oldest pending inputs and late-arrival overlap. '
         'A capped recent-session list is not a complete inventory. Keep credential values out.\n\n'
-        '## Suppression identifiers\n\nNone recorded. Keep only non-sensitive identifiers needed to prevent re-ingestion '
-        'after a forget request; do not restate the forgotten content.\n\n[Schedule](Schedule.md)', 'schema')
-    add('Automation/Schedule.md', '# Daily schedule\n\nState: **prepared**. No scheduler has been installed by the file helper.\n\n'
-        f'Desired timezone: {c["timezone"]}. Proposed review time: {c.get("daily_time", "02:00")}.\n\n'
-        'Provider/task ID/host/next run: pending. Sources and write permissions: unverified. '
-        'Manual test: pending. Observed unattended run: pending. Notification preference: not specified.\n\n'
-        '[Prompt](Daily%20review%20prompt.md) · [Setup procedure](../Procedures/shared-memory/references/scheduling.md)', 'handoff')
+        'Register each bounded source with collection.py and use its pending report before daily review. '
+        'The readable registry describes access and consent; machine collection attempts track missing/partial dates.\n\n'
+        '## Forgetting\n\nUse memory.py forget for identified source or session suppression. Hashed tombstones '
+        'live under .memory-state/suppressions; do not restate forgotten content in this registry. '
+        'Maintained notes and any separate voice archive require their own scoped cleanup.\n\n[Schedule](Schedule.md)', 'schema')
+    schedule_body = ('# Daily schedule\n\nState: **prepared**. No scheduler has been installed by the file helper.\n\n'
+                     f'Desired timezone: {c["timezone"]}. Proposed review time: {c.get("daily_time", "02:00")}.\n\n'
+                     'Provider/task ID/host/next run: pending. Sources and write permissions: unverified. '
+                     'Manual test: pending. Observed unattended run: pending. Notification preference: not specified.\n\n') if daily else (
+                     '# Manual review\n\nState: **manual**. The owner selected review on request. '
+                     'No scheduler requested or installed; unattended-run testing is not applicable. '
+                     'Manual synthesis and fresh recall still need acceptance checks.\n\n')
+    add('Automation/Schedule.md', schedule_body + '[Prompt](Daily%20review%20prompt.md) · '
+        '[Setup procedure](../Procedures/shared-memory/references/scheduling.md)', 'handoff')
     add('Automation/Daily review prompt.md', '# Daily review prompt\n\n'
         f'Storage provider: `{shared["provider"]}`. Shared-drive-relative locator: `{shared["relative_path"] or "not configured"}`. '
         f'Timezone: `{c["timezone"]}`. Resolve the actual local or connector path for this host.\n\n'
@@ -191,8 +226,10 @@ def build(c, root, now):
         for k, v in {'by': editor['assistant'], 'harness': editor['harness'], 'model': editor['model'],
                      'agent': editor['agent'], 'session_id': editor['session_id']}.items())
         + '---\n\nRead ../../Personal/Voice.md, ../../Personal/Preferences.md and ../../rules.md. '
-        'Use explicit preferences and selected samples. Pending calibration stays pending. Establish audience, '
-        'purpose and evidence; never invent personal experiences or opinions. Draft a coherent argument, '
+        'Use explicit preferences and selected samples. Pending calibration stays pending. '
+        'When an optional archive is configured follow ../shared-memory/references/voice.md to retrieve '
+        'only approved user-authored examples for that context. Assistant prose and copied text are not owner voice evidence. '
+        'Establish audience, purpose and evidence; never invent personal experiences or opinions. Draft a coherent argument, '
         'then check meaning, factual support and current voice rules. Save direct feedback with its source, '
         'scope, model and session; do not infer approval from silence. No sending or publication authority is implied.\n').encode()
     for path in ('CLAUDE.md', 'GEMINI.md', '.github/copilot-instructions.md'):
@@ -210,7 +247,9 @@ def build(c, root, now):
     catalog = '# Catalog\n\n' + '\n'.join(f'- [{p}]({quote(p)})' for p in sorted(files)
         if p.endswith('.md'))
     add('index.md', catalog, 'index')
-    files['.memory-state/config.json'] = encoded({'version': 1, 'timezone': c['timezone'], 'storage': shared})
+    files['.memory-state/config.json'] = encoded({'version': 1, 'timezone': c['timezone'], 'storage': shared,
+                                                'scheduling_mode': c.get('scheduling_mode', 'daily'),
+                                                'capture_mode': c.get('capture_mode', 'explicit')})
     return files
 
 
@@ -259,14 +298,48 @@ def plan(c):
         if before is not None and (BEGIN.encode() in before or END.encode() in before):
             if before.count(BEGIN.encode()) != 1 or before.count(END.encode()) != 1 or hook not in before:
                 raise ValueError(f'Conflicting managed block; preserved: {path}')
-            continue
-        data = (before + b'\n\n' if before is not None else b'') + hook
-        changes.append((path, before, data))
+            data = before
+        else:
+            data = (before + b'\n\n' if before is not None else b'') + hook
+            changes.append((path, before, data))
+        record_path = safe_path(root / f'.memory-state/bindings/{digest(str(path).encode())}.json')
+        record = binding_record(root, path, target['kind'], hook, data, c['provenance'])
+        if existing_binding(record_path, record) is None:
+            # Save after its startup target so a retry can fill a missing receipt.
+            changes.append((record_path, None, encoded(record)))
     all_paths = [p for p, _, _ in changes]
     for p in all_paths:
         if any(parent in all_paths or (parent.exists() and not parent.is_dir()) for parent in p.parents):
             raise ValueError(f'Overlapping or non-directory parent: {p}')
     return root, changes
+
+
+def replace_startup(path, before, data):
+    """Publish a complete validated startup file; never append a torn block.
+
+    One local writer is still required: the version check and replace are not a
+    distributed compare-and-swap operation. A pre-existing partial block is an
+    ambiguous user file and must not be repaired by guessing its intended text.
+    """
+    path = safe_path(path)
+    if path.read_bytes() != before:
+        raise ValueError(f'Target changed; re-plan: {path}')
+    mode = stat.S_IMODE(path.stat().st_mode)
+    fd, temporary = tempfile.mkstemp(prefix='.memory-startup-', dir=path.parent)
+    try:
+        with os.fdopen(fd, 'wb') as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.chmod(temporary, mode)
+        safe_path(path)
+        if path.read_bytes() != before:
+            raise ValueError(f'Target changed; re-plan: {path}')
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
+    if path.read_bytes() != data:
+        raise ValueError(f'Readback mismatch; inspect: {path}')
 
 
 def install(c, apply=False, preview=False):
@@ -288,12 +361,7 @@ def install(c, apply=False, preview=False):
         if before is None:
             create_once(path, data)
         else:
-            if path.read_bytes() != before:
-                raise ValueError(f'Target changed; partial install retained: {path}')
-            with path.open('ab') as stream:
-                stream.write(data[len(before):])
-            if path.read_bytes() != data:
-                raise ValueError(f'Readback mismatch; inspect: {path}')
+            replace_startup(path, before, data)
     print('Local files saved/read back. Configure sources and scheduling, then test fresh-session recall and cloud sync.')
     return changes
 

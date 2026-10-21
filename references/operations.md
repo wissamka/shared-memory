@@ -21,10 +21,22 @@ Record the exact correction, source, date and scope. Amend all relevant maintain
 
 ## Forget this
 
-Stop using the identified information immediately. Resolve ambiguous scope before deletion. Remove/redact it from active notes, derived summaries, captures and pending inputs within the authorized scope; inspect related notes so the next daily run does not reintroduce it. Explain where immutable originals, external chat history, cloud version history and backups may retain copies. Do not promise complete erasure outside available control. Add a non-sensitive suppression identifier in `Automation/Sources.md` for future ingestion and a minimal log notice; do not repeat the forgotten content in the notice. Raw-source preservation is a routine-maintenance convention, not a reason to ignore an authorized privacy deletion.
+Stop using the identified information immediately. Resolve ambiguous scope before deletion. A single fact may share a source with unrelated material: do not expand a narrow request into deleting a whole conversation without authority. Raw-source preservation is a routine-maintenance convention, not a reason to ignore an authorized privacy deletion.
 
-For captured evidence being deleted or redacted, remove the affected review receipts and manifests under `.memory-state/receipts` and `.memory-state/runs` as part of that authorized deletion; they contain source identifiers and may contain sensitive reasons. Remaining inputs from those runs become pending again and must be checked against existing notes. Do not edit hashes to pretend the old evidence was unchanged. Keep suppression identifiers in the source registry, and apply them when selecting imports; the JSONL helper does not automatically enforce that registry.
+For an authorized whole captured source, preview the helper plan:
+
+```sh
+python3 scripts/memory.py forget --vault /absolute/path/vault --source-id fictional-source --editor /absolute/path/editor.local.json
+```
+
+Add `--apply` once the concrete scope is authorized. To suppress a whole session, use `--session-id fictional-session --harness Codex` instead of `--source-id`; the harness and session together define the scope. The private editor JSON contains actual current provenance, as described in [installation](installation.md).
+
+The helper saves hashed suppression before cleanup, removes matching capture/source records and dependent manifests/receipts, and lists known maintained destinations for separate review. Capture, preparation and the JSONL importer enforce this machine-readable suppression; a note in `Automation/Sources.md` alone is not enforcement. Existing suppression remains active after an interrupted cleanup, so inspect the result and retry the same authorized operation. A copied export with stable source/session identity remains suppressed; this is not semantic detection of the same fact under an unrelated new identity.
+
+The agent must separately remove/redact authorized content from maintained notes, derived summaries, indexes, logs, optional transcript archives and voice corpora. Search beyond the helper's known destinations: it does not discover every paraphrase or edit maintained prose. For a narrow fact, review the source and its other contents before selecting a source-level action. Do not pretend a modified capture still has its original hash. Mixed review receipts invalidated during cleanup make their other inputs pending again; compare existing notes before re-reviewing them.
+
+Read back affected files and verify a repeat import does not restore suppressed sources. Leave only a non-sensitive notice; do not repeat forgotten content in logs or examples. Explain any retained external chat history, cloud versions, backups or inaccessible copies. Suppression is not complete erasure, and no automatic unsuppress operation is provided.
 
 ## Personalization during ordinary work
 
-Record direct feedback with its context: chat, technical report, article or business document. Promote repeated observations only as proposed rules until the owner endorses them. Do not generalize frustration in one moment into a personality label. The writing procedure uses current approved rules and selected examples, and never invents experience to imitate a style.
+Record direct feedback with its context: chat, technical report, article or business document. Promote repeated observations only as proposed rules until the owner endorses them. Do not generalize frustration in one moment into a personality label. The writing procedure uses current approved rules and selected examples, and never invents experience to imitate a style. Follow [voice calibration](voice.md) for an optional owner-message corpus and reviewed style guide. A full visible-chat archive is a separate, optional source store with its own scope, retention and coverage; it does not replace curated memory or grant access to unavailable conversations.

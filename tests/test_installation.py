@@ -8,6 +8,20 @@ import install_skill
 
 
 class InstallationTests(Case):
+    def test_manual_only_setup_does_not_request_scheduling(self):
+        self.c['scheduling_mode'] = 'manual'
+        self.setup_vault()
+        state = json.loads((self.root / '.memory-state/config.json').read_bytes())
+        self.assertEqual('manual', state['scheduling_mode'])
+        schedule = (self.root / 'Automation/Schedule.md').read_text(encoding='utf-8')
+        handoff = (self.root / 'Working/Handoff.md').read_text(encoding='utf-8')
+        self.assertIn('**manual**', schedule)
+        self.assertNotIn('next run: pending', schedule)
+        self.assertNotIn('requested daily schedule', handoff)
+        self.c['scheduling_mode'] = 'invented'
+        with self.assertRaises(ValueError):
+            bootstrap.validate(self.c)
+
     def test_every_storage_provider_reaches_generated_files(self):
         for provider in ('onedrive', 'google-drive', 'dropbox', 'icloud', 'network-share', 'other', 'local'):
             with self.subTest(provider=provider):

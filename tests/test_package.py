@@ -75,7 +75,8 @@ class PackageTests(Case):
         self.check_links(self.root)
 
     def test_every_helper_has_working_help_without_side_effects(self):
-        for script in ('bootstrap.py', 'memory.py', 'import_sessions.py', 'install_skill.py'):
+        for script in ('bootstrap.py', 'memory.py', 'import_sessions.py', 'install_skill.py',
+                       'collection.py', 'connect_harness.py', 'readiness.py', 'voice.py'):
             self.cli(PACKAGE / 'scripts' / script, '--help')
         self.assertFalse(self.root.exists())
 
