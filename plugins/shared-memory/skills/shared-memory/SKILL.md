@@ -11,6 +11,7 @@ Build memory the owner can read, correct, move and reuse. This skill is self-con
 
 | Request | Read and do |
 |---|---|
+| Explain this package / what do the scripts do? | [Repository guide](references/repository-guide.md); distinguish instructions, executable helpers and private memory |
 | Set up my memory / install this system | [Interview](references/interview.md), then [installation](references/installation.md) |
 | Remember this / store this / save this decision | [Capture and recall](references/operations.md); save in this session |
 | What do you know about me? / change your style | Read the live personal profile and preferences; use the relevant interview questions |

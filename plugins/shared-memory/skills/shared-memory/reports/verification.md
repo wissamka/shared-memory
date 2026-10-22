@@ -1,3 +1,16 @@
+# Documentation release — version 0.3.1
+
+Validated on October 21, 2026. This release adds a beginner's repository guide and README overview, routes explanation requests from the skill entry point, and includes the guide in standalone and plugin distributions. Runtime Python behavior is unchanged.
+
+- All **151 automated tests passed** locally, including installation from the bundled files and generated-plugin consistency.
+- Package link, Python syntax and common private-data-pattern checks passed; the skill-format validator passed.
+- A file-inventory check confirmed that the guide describes all **26 Python files**: 13 implementation/maintenance files and 13 test/support files. Script command and write-behavior descriptions were checked against their implementations.
+- The generated plugin includes the same guide as the standalone skill. Maintainer-only file links open GitHub so they remain usable from an installed skill without the full checkout.
+
+These checks validate the documentation and packaging update. They add no new claim of live cloud synchronization, native startup loading, unattended scheduling or writing-quality acceptance. See the exact published revision's [GitHub checks](https://github.com/wissamka/shared-memory/actions) for platform results.
+
+---
+
 # Reliability and optional voice archive — version 0.3.0
 
 Local validation on October 20, 2026 used fictional records and isolated temporary directories. Four distinct passes completed after integrating the audit fixes:

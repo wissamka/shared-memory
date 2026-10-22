@@ -1,5 +1,5 @@
 {
-  "version": "0.3.0",
+  "version": "0.3.1",
   "files": [
     "LICENSE",
     "README.md",
@@ -17,6 +17,7 @@
     "references/operations.md",
     "references/plugins.md",
     "references/readiness.md",
+    "references/repository-guide.md",
     "references/scheduling.md",
     "references/schema.md",
     "references/shared-storage.md",

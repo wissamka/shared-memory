@@ -8,6 +8,22 @@ Load [SKILL.md](SKILL.md) into an agent that can read and write files, then say:
 
 The agent asks about your preferences and creates your system. You can skip personal questions. No Obsidian plugin, database, embedding service or API key is required for the file tools. An AI harness performs synthesis; its own access and usage limits apply.
 
+## How the pieces fit together
+
+This repository is a reusable kit for building **your own private memory system**. Your actual notes and chats live in separate folders you choose during setup.
+
+| Piece | What it means here |
+|---|---|
+| **Skill** | Written instructions that teach an AI agent how to do a task. [SKILL.md](SKILL.md) is the entry point; the linked guides explain each workflow. |
+| **Python scripts** | Small programs the agent can run for repeatable file operations: creating folders, recording captures, checking review receipts and preserving existing content. They do not call an AI model. |
+| **Plugin** | The installable package that delivers the skill and its tools to a supported AI application. |
+| **Harness** | The application running the AI, such as Codex or Claude Code. It supplies the model, available tools, permissions and any supported scheduler. |
+| **Vault** | Your folder of linked Markdown notes, readable in Obsidian or a text editor. This is where the long-term memory lives. |
+
+For example, you say “Remember that I prefer one-page decision briefs.” The agent captures the statement with its source, updates the relevant preference note, and records the change. A later session that loads your vault can retrieve that preference and apply it. A daily review can also consolidate pending captures from the sources you authorized.
+
+**Start with the [repository guide](references/repository-guide.md)** for a plain-language walkthrough, every Python file's purpose, the folder map, and which commands write files. Most users can ask the agent to perform these workflows without running scripts themselves.
+
 ## What you get
 
 - A browsable vault with topic overviews, projects, people, decisions and open questions.
@@ -110,6 +126,7 @@ Optional [archive and voice calibration](references/voice.md) keep full accessib
 ```sh
 python3 -m unittest discover -s tests -v
 python3 scripts/check_package.py
+python3 scripts/build_plugin.py --check
 ```
 
 Tests use fictional records and temporary directories. They exercise preservation, duplicate capture, failed review receipts, day boundaries and source filtering. They cannot prove a particular user's cloud sync, model quality or scheduler availability. See [acceptance tests](references/acceptance.md) for the live installation checks.
