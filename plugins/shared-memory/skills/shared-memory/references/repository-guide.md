@@ -110,6 +110,7 @@ Links to maintainer-only files below open GitHub because those files are intenti
 | [`assets/config.example.json`](../assets/config.example.json) | Fictional setup configuration showing the required storage, identity, preference and harness settings. Make your real copy outside the repo. |
 | [`assets/capture.example.json`](../assets/capture.example.json) | Fictional sourced-capture format, including discussion and editor provenance. |
 | [`assets/daily-prompt.md`](../assets/daily-prompt.md) | Reusable prompt for the reviewing agent. A prompt is not an installed schedule. |
+| [`assets/setup-skill.md`](../assets/setup-skill.md) | Source for the plugin's dedicated `skills/setup/SKILL.md` entry point. Codex's setup action and Claude's `/shared-memory:setup` use it to run the same complete setup workflow. |
 | [`references/`](#reference-reading-map) | Detailed workflows and formats; use the reading map below. |
 | [`reports/verification.md`](../reports/verification.md) | Recorded tests and their limits. A dated record of verification, not continuous monitoring. |
 | [`reports/completeness-audit.md`](../reports/completeness-audit.md) | Product, skill-development, QA and market review findings, fixes and remaining gaps. |
@@ -135,6 +136,7 @@ Release downloads include `shared-memory.zip` for the standalone skill and `shar
 | [Plugin installation](plugins.md) | Native installation, host updates, removal and maintainer packaging |
 | [Vault installation](installation.md) | Private configuration, bootstrap and setup validation |
 | [Existing vault](existing-vault.md) | Reusing established notes, preferences and voice without replacing the vault |
+| [Complete setup](setup.md) | Asking for choices, appending startup instructions, configuring the selected daily job, testing, and resuming unfinished setup |
 | [Interview](interview.md) | Questions about work, preferences, documents, voice, privacy and storage |
 | [Schema](schema.md) | Vault folders, note metadata, evidence and conflict handling |
 | [Operations](operations.md) | Remember, retrieve, correct, forget and inspect personal memory |

@@ -13,14 +13,14 @@
         ],
         "category": "Productivity",
         "defaultPrompt": [
-          "Set up my shared memory. Ask which shared drive I use and how I like to work."
+          "Complete my shared-memory setup: ask about storage, connect my agents, configure my chosen daily review and test it."
         ],
         "developerName": "Shared Memory contributors",
         "displayName": "Roaming Shared Memory x-harness",
         "shortDescription": "Personal memory across agents, sessions and devices",
         "websiteURL": "https://github.com/wissamka/shared-memory"
       },
-      "onboardingSkill": "./skills/shared-memory/SKILL.md"
+      "onboardingSkill": "./skills/setup/SKILL.md"
     }
   },
   "homepage": "https://github.com/wissamka/shared-memory",
@@ -32,5 +32,5 @@
   "license": "MIT",
   "name": "shared-memory",
   "repository": "https://github.com/wissamka/shared-memory",
-  "version": "0.3.2"
+  "version": "0.3.3"
 }

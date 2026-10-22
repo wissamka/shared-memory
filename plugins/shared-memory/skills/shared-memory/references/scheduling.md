@@ -1,6 +1,6 @@
 # Install and verify daily scheduling
 
-Daily review (also called dream mode) is the agent workflow in [daily-review.md](daily-review.md). Scheduling is a separate persistent trigger for that workflow, and is part of setup when the owner asks for it. Use the current harness's supported scheduler and schema; do not write proprietary internal scheduler files. Check for an existing task by purpose and vault before creating one. Update the existing task instead of duplicating it. Keep the public skill independent of private automation IDs.
+Daily review (also called dream mode) is the agent workflow in [daily-review.md](daily-review.md). During [first-run setup](setup.md), ask the owner to choose daily or manual review. Daily scheduling is part of completing that setup, not an extra command the owner must remember to request. Use the current harness's supported scheduler and schema; do not write proprietary internal scheduler files. Check for an existing task by purpose and vault before creating one. Update the identified task instead of duplicating it; resolve ambiguous matches with the owner. Keep the public skill independent of private automation IDs.
 
 Establish the timezone, review time, selected runtime, source scope and notification preference. A reasonable proposal is 02:00 local time for the previous day, with missed-day catch-up. This is a proposal until selected; do not invent the owner's preference. Show the generated prompt and scope, then use authorization already given rather than asking again unnecessarily.
 

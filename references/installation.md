@@ -1,5 +1,7 @@
 # Installation
 
+The agent should orchestrate these helpers through [complete first-run setup](setup.md). Setup includes asking for the storage and scope, appending the authorized startup sections, creating or updating the chosen daily job, and testing the result. The command reference below supports that workflow; it is not a list of tasks to delegate back to the owner.
+
 ## Install the skill into an agent
 
 Prefer the [native plugin route](plugins.md) for public installation. The following installer is the offline/standalone fallback. If this skill was loaded from an installed plugin, skip installation and proceed to the interview and private-vault bootstrap.

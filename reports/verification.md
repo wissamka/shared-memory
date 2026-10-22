@@ -1,3 +1,16 @@
+# Complete setup workflow — version 0.3.3
+
+Validated on October 21, 2026. A dedicated plugin setup skill now directs the agent through storage/source choices, authorized startup-file appends, creation or update of the selected daily job, and acceptance checks. Existing-vault and standalone routes use the same workflow. Setup keeps missing access and first-run evidence explicit rather than handing an approved scheduling step back to the owner.
+
+- All **153 automated tests passed**. Added relocated-plugin setup-path checks and a packaged two-host setup/rerun exercise that preserves existing instructions and exposes missing scheduler/recall evidence.
+- The fictional existing-vault exercise passed again, including sourced capture, promotion into an existing non-template preference note and a verified review receipt.
+- Package links, Python syntax, generated-plugin consistency, both skill-format checks and native Claude plugin-manifest validation passed.
+- Reviewed the distribution and privacy scan before publication. The setup workflow uses supported host tools; no executable install hooks, extra dependencies or private scheduler identifiers are distributed.
+
+These checks validate packaging and helper behavior. They do not simulate a successful live scheduler, establish every host's model compliance or prove cloud roaming. A user's setup still needs its actual authorized storage, tools, runtime and acceptance evidence. Codex exposes the onboarding action; Claude Code exposes `/shared-memory:setup`. Installing files alone cannot supply those choices or grant access.
+
+---
+
 # Product rename and existing-vault guidance — version 0.3.2
 
 Validated on October 21, 2026. The public product name is now **Roaming Shared Memory x-harness**. The GitHub address, skill/plugin identifiers and install commands remain unchanged.

@@ -13,7 +13,7 @@ Build memory the owner can read, correct, move and reuse. This skill is self-con
 |---|---|
 | Explain this package / what do the scripts do? | [Repository guide](references/repository-guide.md); distinguish instructions, executable helpers and private memory |
 | Use my existing memory / connect an established vault | [Existing-vault integration](references/existing-vault.md); preserve the live schema and map existing notes before adding helper state |
-| Set up my memory / install this system | [Interview](references/interview.md), then [installation](references/installation.md) |
+| Set up my memory / install this system / finish setup | [Complete first-run setup](references/setup.md); ask, append startup instructions, configure the chosen job and test the whole connection |
 | Remember this / store this / save this decision | [Capture and recall](references/operations.md); save in this session |
 | What do you know about me? / change your style | Read the live personal profile and preferences; use the relevant interview questions |
 | Forget this / stop retaining this | [Forgetting](references/operations.md#forget-this); resolve scope, preview suppression and cleanup, then verify related notes |
@@ -43,7 +43,9 @@ Coordinate one writer for maintained notes; unique session captures may be writt
 
 ## Installation completion
 
-When invoked by a plugin setup action, begin the interview and vault setup below. The plugin is already installed; do not install another standalone copy. For an existing vault, compare the packaged `skill-files.json` version with its canonical procedure and report any pending upgrade; follow the plugin lifecycle procedure when asked to upgrade. A package update is not permission to overwrite customized memory.
+When invoked by a plugin setup action, execute [complete first-run setup](references/setup.md). The plugin is already installed; do not install another standalone copy. For an existing vault, compare the packaged `skill-files.json` version with its canonical procedure and report any pending upgrade; follow the plugin lifecycle procedure when asked to upgrade. A package update is not permission to overwrite customized memory.
+
+Setup owns startup-file connections and scheduling through verification. Ask for the owner's choices, preview the concrete changes, then append the authorized managed blocks and create or update the selected real job. Do not leave an approved daily job as a follow-up instruction or declare setup complete because files were copied. Resume unfinished setup from its private checklist and live state; preserve unrelated instructions and jobs.
 
 Reuse known answers. Ask only the missing questions that affect installation, permissions or personalization. Preview concrete paths and changes; proceed within authorization already given. The bootstrap script defaults to preview and requires `--apply` to write. Never run the example configuration as a real person's profile.
 

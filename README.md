@@ -69,7 +69,14 @@ For **Claude Code**, run these inside Claude:
 /plugin install shared-memory@shared-memory
 ```
 
-Start a fresh session and ask **“Use Roaming Shared Memory x-harness to set up my memory.”** In Claude Code you can invoke `/shared-memory:shared-memory`. The agent asks which shared drive you use and guides the setup. You do not need to download or copy skill files yourself.
+Start a fresh session and choose **Set up** in Codex, or invoke **`/shared-memory:setup`** in Claude Code. You can also say “Use Roaming Shared Memory x-harness to set up my memory.” This starts one [setup conversation](references/setup.md):
+
+1. Choose your storage, existing or new vault, AI tools and capture scope.
+2. Review the proposed changes. The agent appends a memory section to the selected startup files, such as Codex's `AGENTS.md` and Claude Code's `CLAUDE.md`, preserving existing instructions.
+3. Choose daily or manual review. For daily review, the agent creates or updates the supported scheduled job, verifies its settings and tests execution where supported.
+4. Test capture, synthesis and recall, then receive a checklist of what works and anything still awaiting access or a first scheduled run.
+
+After setup, use ordinary conversation or say “remember this.” You do not need to invoke the skill every time. Installing plugin files alone cannot choose your private vault or grant access; your host may require launching setup once. The agent handles the approved setup work rather than leaving you with commands to copy.
 
 These install from our public GitHub marketplace. The plugin is not yet listed in the vendors' reviewed public directories. [Installation, updates and removal](references/plugins.md) explains requirements and the separate update of the procedure inside an existing vault.
 
@@ -101,7 +108,7 @@ The separate vault bootstrap creates a **new** vault and preserves existing star
 
 “Dream mode” means an agent reviews accessible sessions, extracts useful knowledge and updates sourced notes. It is a workflow, not a separately installed background process. [Daily review](references/daily-review.md) describes it.
 
-Ask the installing agent to schedule the generated `Automation/Daily review prompt.md` using its supported scheduler. The setup records the actual provider and task ID in `Automation/Schedule.md`. Native scheduling instructions for Codex, Claude and other environments are in [scheduling.md](references/scheduling.md).
+Setup asks whether you want daily synthesis and, if selected, creates or updates the real job using the supported scheduler. It records the actual provider, task ID and execution evidence in `Automation/Schedule.md`. You should not need a separate request to activate an approved schedule. If access is unavailable or the first scheduled run has not happened, setup reports that gap explicitly. Native scheduling instructions for Codex, Claude and other environments are in [scheduling.md](references/scheduling.md).
 
 The file installer does not silently create an operating-system task, install a model runtime or purchase service usage. A scheduler must have durable access to both the configured session sources and the vault. The helper's `prepare` command creates a review manifest; it does not itself perform LLM synthesis.
 

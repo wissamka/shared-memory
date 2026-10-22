@@ -6,9 +6,50 @@ import zipfile
 from helpers import Case, PACKAGE, bootstrap, encoded
 import build_plugin
 import install_skill
+import readiness
 
 
 class PluginTests(Case):
+    def test_setup_entrypoint_survives_relocation_and_reaches_bundled_workflow(self):
+        plugin = self.base / 'Relocated plugin with spaces'
+        for name, data in build_plugin.plugin_files().items():
+            target = plugin / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+        manifest = json.loads((plugin / 'plugin.json').read_bytes())
+        entry = plugin / manifest['extensions']['com.openai']['onboardingSkill']
+        self.assertEqual(plugin / 'skills/setup/SKILL.md', entry)
+        self.assertEqual(install_skill.bundle()['assets/setup-skill.md'], entry.read_bytes())
+        for relative in ('../shared-memory/SKILL.md', '../shared-memory/references/setup.md'):
+            self.assertIn(relative, entry.read_text(encoding='utf-8'))
+            target = (entry.parent / relative).resolve()
+            self.assertTrue(target.is_relative_to(plugin.resolve()))
+            self.assertTrue(target.is_file())
+
+    def test_packaged_setup_preserves_two_startup_files_and_exposes_unfinished_job(self):
+        targets = [self.base / '.codex/AGENTS.md', self.base / '.claude/CLAUDE.md']
+        originals = [b'Existing coding rules.\n', b'Existing writing rules.\n']
+        for target, original in zip(targets, originals):
+            target.parent.mkdir(parents=True)
+            target.write_bytes(original)
+        config = self.base / 'setup.json'
+        config.write_bytes(encoded({**self.c, 'scheduling_mode': 'daily', 'harness_targets': [
+            {'kind': kind, 'path': str(target)} for kind, target in zip(('codex', 'claude'), targets)]}))
+        script = build_plugin.PLUGIN / 'skills/shared-memory/scripts/bootstrap.py'
+        self.cli(script, '--config', config, '--apply')
+        before = [p.read_bytes() for p in targets]
+        self.cli(script, '--config', config, '--apply')
+        for target, original, applied in zip(targets, originals, before):
+            self.assertTrue(applied.startswith(original))
+            self.assertEqual(applied, target.read_bytes())
+            self.assertEqual(1, applied.count(b'<!-- shared-memory:start -->'))
+        result = readiness.report(self.root)
+        self.assertEqual('attention_required', result['overall_state'])
+        self.assertEqual(2, len(result['connections']['bindings']))
+        self.assertTrue(all(x['state'] == 'block_verified' for x in result['connections']['bindings']))
+        for check in ('fresh_recall', 'scheduler_enabled', 'scheduler_observed'):
+            self.assertEqual('unverified', result['acceptance']['checks'][check]['state'])
+
     def source_copy(self):
         source = self.base / 'Package'
         for name, data in install_skill.bundle().items():

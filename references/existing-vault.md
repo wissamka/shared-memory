@@ -4,6 +4,8 @@ Use this workflow when someone already has an Obsidian or Markdown memory system
 
 This is a reviewed, agent-guided integration. The owner must authorize the target vault and startup-file changes. Reuse answers and authorization already supplied; ask only about missing scope or material choices.
 
+Follow the [complete setup workflow](setup.md) around this integration. Offer startup-file connections and daily/manual review, then perform the authorized changes in the same setup. Reuse an identified existing schedule; do not leave the owner to discover a separate scheduling step.
+
 ## Inspect and map before editing
 
 1. Resolve the real vault and storage provider. Read its live schema, rules, index, recent log, relevant preference notes and any writing procedure. Identify separate project vaults and chat archives; preserve their boundaries.

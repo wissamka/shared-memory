@@ -24,15 +24,17 @@ In Claude Code:
 /plugin install shared-memory@shared-memory
 ```
 
-Start a fresh session, then invoke `/shared-memory:shared-memory` and ask it to set up your memory. Terminal equivalents are `claude plugin marketplace add wissamka/shared-memory` and `claude plugin install shared-memory@shared-memory`.
+Start a fresh session, then invoke `/shared-memory:setup`. The ordinary `/shared-memory:shared-memory` skill also routes setup requests to the same workflow. Terminal equivalents are `claude plugin marketplace add wissamka/shared-memory` and `claude plugin install shared-memory@shared-memory`.
 
 The release also contains `shared-memory.plugin`, a ZIP of the same plugin for interfaces that support local plugin uploads. File-format packaging alone does not establish compatibility with every Cowork version; use the documented Claude Code route unless upload/install has been verified in your client.
 
-## What setup still needs
+## One setup conversation, then ordinary use
 
 Choose OneDrive, Google Drive, another shared drive or local storage; give the agent an authorized writable location. It asks about capture scope, exclusions, personal preferences and the agent tools you use. Python 3.10+ runs the file helpers; a timezone database may be needed on Windows. The agent can perform equivalent checked file operations where Python is unavailable.
 
-No vault, session collection, cloud access, or daily task is activated merely by installing this plugin. The installing agent must record what was created, which sources it could access, whether a real schedule was installed, and the results of [acceptance checks](acceptance.md).
+During [setup](setup.md), the agent asks to append a managed memory section to the actual selected startup files, preserves their existing instructions, and applies the authorized changes. It asks about daily versus manual review and creates or updates the chosen persistent task through supported tools. It checks capture, synthesis, fresh recall, storage and scheduling, then reports each result. Approved work must not be left as “ask me to schedule this later.”
+
+Installing plugin files alone does not open an interview in every host. Launch Codex's setup action or Claude's setup command once when needed. After the connection is tested, use normal conversation, “remember this” and “use my writing style”; the startup files route the agent to the vault. No repeated setup command is needed. Missing access or an unobserved first scheduled run stays explicit and resumable. No account permissions or background jobs are silently granted at install time.
 
 ## Updates have two parts
 

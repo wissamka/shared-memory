@@ -1,5 +1,5 @@
 {
-  "version": "0.3.2",
+  "version": "0.3.3",
   "files": [
     "LICENSE",
     "README.md",
@@ -8,6 +8,7 @@
     "assets/capture.example.json",
     "assets/config.example.json",
     "assets/daily-prompt.md",
+    "assets/setup-skill.md",
     "install.py",
     "references/acceptance.md",
     "references/daily-review.md",
@@ -21,6 +22,7 @@
     "references/repository-guide.md",
     "references/scheduling.md",
     "references/schema.md",
+    "references/setup.md",
     "references/shared-storage.md",
     "references/voice.md",
     "reports/completeness-audit.md",

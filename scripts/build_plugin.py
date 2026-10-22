@@ -27,14 +27,14 @@ def plugin_files(source=ROOT):
     portable = {
         '$schema': 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', **identity,
         'extensions': {'com.openai': {
-            'onboardingSkill': './skills/shared-memory/SKILL.md',
+            'onboardingSkill': './skills/setup/SKILL.md',
             'interface': {
                 'displayName': 'Roaming Shared Memory x-harness',
                 'shortDescription': 'Personal memory across agents, sessions and devices',
                 'developerName': 'Shared Memory contributors',
                 'category': 'Productivity', 'capabilities': ['Read', 'Write'],
                 'websiteURL': REPO,
-                'defaultPrompt': ['Set up my shared memory. Ask which shared drive I use and how I like to work.'],
+                'defaultPrompt': ['Complete my shared-memory setup: ask about storage, connect my agents, configure my chosen daily review and test it.'],
             },
         }},
     }
@@ -42,6 +42,7 @@ def plugin_files(source=ROOT):
         'plugin.json': encoded(portable),
         '.claude-plugin/plugin.json': encoded(identity),
         'LICENSE': skill['LICENSE'],
+        'skills/setup/SKILL.md': skill['assets/setup-skill.md'],
         **{'skills/shared-memory/' + p: data for p, data in skill.items()},
     }
 
