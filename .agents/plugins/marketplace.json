@@ -1,7 +1,7 @@
 {
   "name": "shared-memory",
   "interface": {
-    "displayName": "Shared Memory AI Second Brain"
+    "displayName": "Roaming Shared Memory x-harness"
   },
   "plugins": [
     {

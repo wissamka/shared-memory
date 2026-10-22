@@ -12,6 +12,8 @@ Start a fresh harness session to load the skill, then run the interview before c
 
 ## Bootstrap the private vault
 
+If the owner already has a populated memory vault, use [existing-vault integration](existing-vault.md). The new-vault bootstrap below is not a migration tool. Reuse known preferences and existing writing skills rather than repeating the interview or copying their personal facts into a new vault.
+
 Use the interview to fill a private JSON configuration **outside the skill repository**. The example in `assets/config.example.json` is fictional and must be adapted. No network call or account configuration is made by the bootstrap script.
 
 Required fields: `preferred_name`, `role`, `goal`, `timezone` (IANA name), absolute `vault_path`, and `provenance` with `assistant`, `harness`, `model`, `agent`, `session_id`, `chat_reference`, `model_note`. Unknown identities must be literal `unknown` with explanation, never invented.

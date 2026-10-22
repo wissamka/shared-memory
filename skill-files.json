@@ -1,5 +1,5 @@
 {
-  "version": "0.3.1",
+  "version": "0.3.2",
   "files": [
     "LICENSE",
     "README.md",
@@ -11,6 +11,7 @@
     "install.py",
     "references/acceptance.md",
     "references/daily-review.md",
+    "references/existing-vault.md",
     "references/harnesses.md",
     "references/installation.md",
     "references/interview.md",

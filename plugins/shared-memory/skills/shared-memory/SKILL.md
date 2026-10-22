@@ -3,7 +3,7 @@ name: shared-memory
 description: Bootstrap and maintain a personal Obsidian memory vault shared across AI harnesses. Use for installing shared memory, remembering or storing information, resuming work, personalizing assistant style, and configuring or running daily session synthesis.
 ---
 
-# Shared Memory AI Second Brain
+# Roaming Shared Memory x-harness
 
 Build memory the owner can read, correct, move and reuse. This skill is self-contained: resolve bundled files relative to this directory. It does not depend on the author's vault, accounts, other skills or private paths.
 
@@ -12,6 +12,7 @@ Build memory the owner can read, correct, move and reuse. This skill is self-con
 | Request | Read and do |
 |---|---|
 | Explain this package / what do the scripts do? | [Repository guide](references/repository-guide.md); distinguish instructions, executable helpers and private memory |
+| Use my existing memory / connect an established vault | [Existing-vault integration](references/existing-vault.md); preserve the live schema and map existing notes before adding helper state |
 | Set up my memory / install this system | [Interview](references/interview.md), then [installation](references/installation.md) |
 | Remember this / store this / save this decision | [Capture and recall](references/operations.md); save in this session |
 | What do you know about me? / change your style | Read the live personal profile and preferences; use the relevant interview questions |
@@ -27,6 +28,8 @@ Build memory the owner can read, correct, move and reuse. This skill is self-con
 ## Shared operating contract
 
 At the beginning of memory-dependent work, resolve the configured live vault and read its `rules.md`, `AGENTS.md`, `index.md`, recent `log.md`, relevant profile/preferences and project notes. Do not read the entire vault by default. Reuse an existing system when present; never replace it with a fresh competing copy.
+
+For an integrated existing vault, read its local integration map when present. Its live schema and canonical preferences/voice sources take precedence over this package's example folder layout. Pointer notes route to existing evidence; do not create a second set of personal facts or a replacement writing style.
 
 Keep raw evidence, session records, maintained knowledge, personal preferences and reusable procedures distinct. [The schema](references/schema.md) explains their relationship. Preserve source/event/as-of dates, claim status and unresolved contradictions. A proposal is not a decision. A user's preference is not an independently verified external fact.
 

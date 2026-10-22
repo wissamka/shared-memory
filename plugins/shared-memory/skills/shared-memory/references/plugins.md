@@ -1,6 +1,6 @@
 # Plugin installation and updates
 
-Shared Memory AI Second Brain is distributed through this project's GitHub marketplace. It is a file-based skill plugin: no server, credentials or background collector are bundled. Installation adds the workflow to your agent. The guided setup then chooses storage, creates your private vault, connects authorized sources and verifies scheduling separately.
+Roaming Shared Memory x-harness is distributed through this project's GitHub marketplace. It is a file-based skill plugin: no server, credentials or background collector are bundled. Installation adds the workflow to your agent. The guided setup then chooses storage, creates your private vault, connects authorized sources and verifies scheduling separately.
 
 ## ChatGPT desktop / Codex
 
@@ -11,7 +11,7 @@ codex plugin marketplace add wissamka/shared-memory
 codex plugin add shared-memory@shared-memory
 ```
 
-Open Plugins in the desktop app, or `/plugins` in Codex, to inspect the installed plugin. If it does not appear immediately, restart the app. Choose its setup action or ask: “Use Shared Memory AI Second Brain to set up my memory.” Select the plugin/skill explicitly if your interface requires it.
+Open Plugins in the desktop app, or `/plugins` in Codex, to inspect the installed plugin. If it does not appear immediately, restart the app. Choose its setup action or ask: “Use Roaming Shared Memory x-harness to set up my memory.” Select the plugin/skill explicitly if your interface requires it.
 
 This adds our GitHub marketplace. It does not mean the plugin has been accepted into OpenAI's reviewed public directory. A browser-only ChatGPT session without authorized durable file access cannot create a local vault; use an environment with that access. Account, workspace and client-version restrictions can affect plugin availability.
 

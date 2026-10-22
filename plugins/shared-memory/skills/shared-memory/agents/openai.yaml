@@ -1,4 +1,4 @@
 interface:
-  display_name: "Shared Memory AI Second Brain"
+  display_name: "Roaming Shared Memory x-harness"
   short_description: "Personal memory across agents, sessions and devices"
   default_prompt: "Use $shared-memory to interview me and install my portable memory vault with daily synthesis."

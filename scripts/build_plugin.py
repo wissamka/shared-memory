@@ -29,7 +29,7 @@ def plugin_files(source=ROOT):
         'extensions': {'com.openai': {
             'onboardingSkill': './skills/shared-memory/SKILL.md',
             'interface': {
-                'displayName': 'Shared Memory AI Second Brain',
+                'displayName': 'Roaming Shared Memory x-harness',
                 'shortDescription': 'Personal memory across agents, sessions and devices',
                 'developerName': 'Shared Memory contributors',
                 'category': 'Productivity', 'capabilities': ['Read', 'Write'],

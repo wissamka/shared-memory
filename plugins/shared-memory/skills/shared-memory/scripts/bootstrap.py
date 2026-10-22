@@ -237,7 +237,7 @@ def build(c, root, now):
         add(path, '# Shared memory startup\n\nRead ' + prefix + 'AGENTS.md, ' + prefix
             + 'rules.md, ' + prefix + 'index.md and recent ' + prefix + 'log.md before memory-dependent work. '
             'Use the canonical Procedures/shared-memory skill.\n', 'schema')
-    add('00-Hub.md', '# Shared Memory AI Second Brain\n\n'
+    add('00-Hub.md', '# Roaming Shared Memory x-harness\n\n'
         '[Rules](rules.md) · [Schema](AGENTS.md) · [Catalog](index.md) · [History](log.md)\n\n'
         '[Profile](Personal/Profile.md) · [Preferences](Personal/Preferences.md) · [Voice](Personal/Voice.md)\n\n'
         '[Topics](Topics/Overview.md) · [Projects](Projects/Overview.md) · [People](People/Overview.md)\n\n'

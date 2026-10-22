@@ -1,6 +1,8 @@
-# Shared Memory AI Second Brain
+# Roaming Shared Memory x-harness
 
 A standalone agent skill that sets up an Obsidian knowledge base, learns how you like to work, and carries useful context between AI tools.
+
+The product was previously named Shared Memory AI Second Brain. The GitHub address and `shared-memory` installation identifiers stay the same, so existing links and commands continue to work. “x-harness” refers to using the same memory across connected AI applications.
 
 Load [SKILL.md](SKILL.md) into an agent that can read and write files, then say:
 
@@ -67,7 +69,7 @@ For **Claude Code**, run these inside Claude:
 /plugin install shared-memory@shared-memory
 ```
 
-Start a fresh session and ask **“Use Shared Memory AI Second Brain to set up my memory.”** In Claude Code you can invoke `/shared-memory:shared-memory`. The agent asks which shared drive you use and guides the setup. You do not need to download or copy skill files yourself.
+Start a fresh session and ask **“Use Roaming Shared Memory x-harness to set up my memory.”** In Claude Code you can invoke `/shared-memory:shared-memory`. The agent asks which shared drive you use and guides the setup. You do not need to download or copy skill files yourself.
 
 These install from our public GitHub marketplace. The plugin is not yet listed in the vendors' reviewed public directories. [Installation, updates and removal](references/plugins.md) explains requirements and the separate update of the procedure inside an existing vault.
 
@@ -93,7 +95,7 @@ Start a fresh agent session and request shared-memory setup (or `/shared-memory`
 
 Follow [the installation guide](references/installation.md) for a script-driven setup. Python 3.10+ is required for helpers; install the `tzdata` package if the platform has no IANA timezone database. The skill can also guide an agent through equivalent file creation when Python is unavailable, with the same collision and validation checks.
 
-The separate vault bootstrap creates a **new** vault and preserves existing startup instructions. It refuses unrelated nonempty vaults. Existing vaults need a reviewed integration, not an overwrite. Keep the public skill repository and private vault in separate directories. Examples are fictional; configuration, personal captures and generated vaults belong outside this repository.
+The separate vault bootstrap creates a **new** vault and preserves existing startup instructions. It refuses unrelated nonempty vaults. If you already have memory, ask **“Connect this to my existing vault and preserve its organization.”** Follow [existing-vault integration](references/existing-vault.md) to reuse your notes, rules and writing procedure. This is an agent-guided integration, not an automatic migration. Keep the public skill repository and private vault in separate directories. Examples are fictional; configuration, personal captures and generated vaults belong outside this repository.
 
 ## Daily review and scheduling
 

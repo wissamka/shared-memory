@@ -1,3 +1,13 @@
+# Product rename and existing-vault guidance — version 0.3.2
+
+Validated on October 21, 2026. The public product name is now **Roaming Shared Memory x-harness**. The GitHub address, skill/plugin identifiers and install commands remain unchanged.
+
+- All **151 automated tests passed** after the display-name changes. Package links, Python syntax and generated-plugin consistency passed.
+- A separate fictional existing-vault exercise followed the new integration guide: preserved the established schema, catalog and log; preserved surrounding startup instructions; installed the canonical procedure; captured a source; synthesized into a pre-existing preference page outside the template layout; verified its receipt and readiness inspection. No bootstrap marker was forged.
+- The existing-vault route is agent-guided, with reviewed additions and compatibility pointers. It is not a new automatic migration tool, and the fictional exercise does not establish fresh model recall, cloud roaming or scheduler execution in a user's installation.
+
+---
+
 # Documentation release — version 0.3.1
 
 Validated on October 21, 2026. This release adds a beginner's repository guide and README overview, routes explanation requests from the skill entry point, and includes the guide in standalone and plugin distributions. Runtime Python behavior is unchanged.

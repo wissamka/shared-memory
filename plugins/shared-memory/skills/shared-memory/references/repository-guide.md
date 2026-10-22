@@ -1,6 +1,6 @@
 # Understand the repository
 
-Shared Memory AI Second Brain gives an AI agent a method and file tools for building a private, portable memory system. The public repository contains reusable instructions, code and fictional examples. Your personal information belongs in the separate vault and optional chat archive you choose during setup.
+Roaming Shared Memory x-harness gives an AI agent a method and file tools for building a private, portable memory system. The public repository contains reusable instructions, code and fictional examples. Your personal information belongs in the separate vault and optional chat archive you choose during setup.
 
 You can use the system through requests such as “remember this,” “review yesterday's sessions,” “resume the project,” or “write using my approved style guide.” Most users do not need to run the Python tools themselves.
 
@@ -8,7 +8,7 @@ You can use the system through requests such as “remember this,” “review y
 
 1. **Install the plugin or standalone skill.** This makes the instructions and helpers available to your AI application. Installation alone does not create a vault or turn on chat collection.
 2. **Set up your private memory.** The agent asks which storage you use: OneDrive, Google Drive, another shared drive, or local only. It interviews you about your work, preferences, document style and capture boundaries. Personal questions are optional.
-3. **Create or integrate the vault.** The bootstrap tool creates a new folder of linked notes and startup instructions. An existing unrelated vault needs reviewed integration; the tool will not overwrite it to make setup succeed.
+3. **Create or integrate the vault.** The bootstrap tool creates a new folder of linked notes and startup instructions. [Existing-vault integration](existing-vault.md) preserves an established system and adds reviewed connections and helper state; the bootstrap tool will not overwrite it to make setup succeed.
 4. **Capture useful information.** The agent records authorized facts, preferences, decisions and source references. It distinguishes what you said from its own suggestions, and preserves uncertainty and conflicting accounts.
 5. **Synthesize the captures.** The agent reads pending sources and updates durable topic, project and personal notes. Python tools record which inputs were reviewed, deferred or incorporated into which files.
 6. **Use memory in later sessions.** A connected agent reads the startup instructions and relevant notes. Shared storage can carry the files to another device, where access and startup loading still need verification.
@@ -134,6 +134,7 @@ Release downloads include `shared-memory.zip` for the standalone skill and `shar
 | [This repository guide](repository-guide.md) | Concepts, every Python file and the package map |
 | [Plugin installation](plugins.md) | Native installation, host updates, removal and maintainer packaging |
 | [Vault installation](installation.md) | Private configuration, bootstrap and setup validation |
+| [Existing vault](existing-vault.md) | Reusing established notes, preferences and voice without replacing the vault |
 | [Interview](interview.md) | Questions about work, preferences, documents, voice, privacy and storage |
 | [Schema](schema.md) | Vault folders, note metadata, evidence and conflict handling |
 | [Operations](operations.md) | Remember, retrieve, correct, forget and inspect personal memory |
