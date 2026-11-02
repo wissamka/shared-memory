@@ -73,6 +73,7 @@ def startup(c, root):
             f'Canonical vault on this device: `{root}`. Storage provider: `{shared["provider"]}`. Shared-drive-relative locator: '
             f'`{shared["relative_path"] or "not configured"}`. Resolve the actual path or '
             'authenticated connector on another host; never assume this machine path exists there.\n\n'
+            'For assignments and personal reminders, read the two task routes in vault AGENTS.md. '
             'Before memory-dependent work read the vault rules.md, AGENTS.md, index.md, recent log.md '
             'and relevant Personal/Preferences.md/project handoff. Apply its '
             'Procedures/shared-memory/SKILL.md for remember/store/recall/correct requests and daily synthesis. '
@@ -112,6 +113,10 @@ def build(c, root, now):
 
     add('AGENTS.md', '# Shared-memory operating manual\n\n'
         'Read rules.md, index.md, recent log.md and relevant personal/project notes at the start of memory-dependent work. '
+        'Track delegated work from acceptance to verified completion in [Task List](Task%20List.md). '
+        'Route “add this to my tasks”, personal list queries and reminders to [My Tasks](My%20Tasks.md). '
+        'Read the [task workflow](Procedures/shared-memory/references/tasks.md) before updating either list. '
+        'Read the shared agent list at session start and update your rows at meaningful milestones. '
         'Canonical procedure: [shared-memory](Procedures/shared-memory/SKILL.md). '
         'Detailed schema: [schema](Procedures/shared-memory/references/schema.md).\n\n'
         'Personal holds approved facts, preferences and voice. Topics holds long-term subject knowledge; '
@@ -165,6 +170,16 @@ def build(c, root, now):
         '[voice archive workflow](../Procedures/shared-memory/references/voice.md). '
         'Approved guides and examples are writing context; no model training is performed.\n\n'
         '[Writing procedure](../Procedures/write-in-my-voice/SKILL.md)', 'profile')
+    for filename, asset in [('Task List.md', 'agent-tasks.md'), ('My Tasks.md', 'personal-tasks.md')]:
+        body = (PACKAGE / 'assets' / asset).read_text(encoding='utf-8')
+        add(filename, body + '\n[Task workflow](Procedures/shared-memory/references/tasks.md)', 'tracker')
+    add('Automation/Task reminders.md', '# Personal task reminder settings\n\n'
+        f'Personal list: [My Tasks](../My%20Tasks.md). Vault timezone: {c["timezone"]}.\n\n'
+        '| Cadence | State | Time / timezone | Private destination | Provider / job ID | Next run | Delivery observed |\n'
+        '|---|---|---|---|---|---|---|\n'
+        '| Daily: today and tomorrow | Unconfigured | | | | | |\n'
+        '| Sunday: following Monday through Sunday | Unconfigured | | | | | |\n\n'
+        '[Setup and reminder windows](../Procedures/shared-memory/references/tasks.md)', 'handoff')
     add('Working/Handoff.md', '# Handoff\n\n## Objective\n\n' + c['goal'] + '\n\n## Completed\n\n'
         'Local memory scaffolding. Cloud access and fresh-session recall remain unverified.\n\n'
         '## Next action\n\nComplete the source registry, test a harmless capture and recall, and configure '
@@ -242,6 +257,7 @@ def build(c, root, now):
         '[Profile](Personal/Profile.md) · [Preferences](Personal/Preferences.md) · [Voice](Personal/Voice.md)\n\n'
         '[Topics](Topics/Overview.md) · [Projects](Projects/Overview.md) · [People](People/Overview.md)\n\n'
         '[Sessions](Sessions/Overview.md) · [Inbox](_Inbox/Overview.md) · [Sources](RAW/Overview.md)\n\n'
+        '[Agent tasks](Task%20List.md) · [My tasks](My%20Tasks.md) · [Personal reminders](Automation/Task%20reminders.md)\n\n'
         '[Handoff](Working/Handoff.md) · [Conflicts](Working/Conflicts.md) · [Daily schedule](Automation/Schedule.md)\n\n'
         '[Memory procedure](Procedures/shared-memory/SKILL.md) · [Writing procedure](Procedures/write-in-my-voice/SKILL.md)', 'hub')
     catalog = '# Catalog\n\n' + '\n'.join(f'- [{p}]({quote(p)})' for p in sorted(files)
@@ -267,6 +283,8 @@ def plan(c):
         state = json.loads(marker.read_text(encoding="utf-8"))
         if not isinstance(state, dict) or state.get('version') != 1 or state.get('config_sha256') != fingerprint:
             raise ValueError('Different existing installation; integrate manually or choose a new vault')
+        if 'My Tasks.md' not in state.get('files', []):
+            raise ValueError('Existing vault predates task lists. Run the guided task-list upgrade in references/existing-vault.md before changing its layout.')
         now = state['created_at']
     else:
         if root.exists() and (not root.is_dir() or any(root.iterdir())):

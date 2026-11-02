@@ -175,3 +175,7 @@ The helpers provide local validation and bookkeeping. The agent and user still n
 A shared-drive folder does not grant an AI access to an account, prove synchronization, or coordinate simultaneous edits on different devices. Use one synthesis writer and verify a real round trip when roaming matters. The Python helpers operate on local filesystem paths; connector-only setups need the agent's authorized connector workflow and equivalent checks.
 
 Updating the installed plugin also does not automatically update `Procedures/shared-memory` inside an existing vault. That canonical copy may have owner customizations and needs a reviewed upgrade. Removing the plugin leaves the private vault, startup connections and scheduled task in place until separately addressed. See [plugin lifecycle](plugins.md) and the [remaining roadmap](../reports/roadmap.md).
+
+## Task lists and personal reminders
+
+The bootstrap creates two Markdown trackers and a private schedule receipt. The agent edits the trackers according to the [task workflow](tasks.md). The [agent list template](../assets/agent-tasks.md) holds work agents accept. The [personal list template](../assets/personal-tasks.md) holds work the owner plans to do. The [agenda helper](../scripts/task_agenda.py) reads the personal list, selects due dates in the owner's timezone and prints the daily or weekly agenda. The host scheduler handles delivery.

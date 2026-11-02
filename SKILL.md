@@ -1,6 +1,6 @@
 ---
 name: shared-memory
-description: Bootstrap and maintain a personal Obsidian memory vault shared across AI harnesses. Use for installing shared memory, remembering or storing information, resuming work, personalizing assistant style, and configuring or running daily session synthesis.
+description: Bootstrap and maintain a personal Obsidian memory vault shared across AI harnesses. Use for installing shared memory, remembering or storing information, resuming work, personalizing assistant style, tracking delegated and personal tasks, generating reminder agendas, and configuring or running daily session synthesis.
 ---
 
 # Roaming Shared Memory x-harness
@@ -14,6 +14,7 @@ Build memory the owner can read, correct, move and reuse. This skill is self-con
 | Explain this package / what do the scripts do? | [Repository guide](references/repository-guide.md); distinguish instructions, executable helpers and private memory |
 | Use my existing memory / connect an established vault | [Existing-vault integration](references/existing-vault.md); preserve the live schema and map existing notes before adding helper state |
 | Set up my memory / install this system / finish setup | [Complete first-run setup](references/setup.md); ask, append startup instructions, configure the chosen job and test the whole connection |
+| Delegate work / add this to my tasks / what is on my list / remind me | [Two task lists and personal reminders](references/tasks.md). Read the vault’s task routes, update the right list, and verify the save |
 | Remember this / store this / save this decision | [Capture and recall](references/operations.md); save in this session |
 | What do you know about me? / change your style | Read the live personal profile and preferences; use the relevant interview questions |
 | Forget this / stop retaining this | [Forgetting](references/operations.md#forget-this); resolve scope, preview suppression and cleanup, then verify related notes |

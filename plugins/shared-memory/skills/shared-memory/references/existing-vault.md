@@ -62,3 +62,9 @@ The standard startup block reads `Personal/Preferences.md` and `Procedures/write
 5. For shared storage, verify actual cloud contents and another-device access as needed. A local readback does not prove roaming. Reuse and inspect an existing scheduler if one is identified; leave actual scheduling/observed-run gaps explicit otherwise.
 
 Save a completion record listing the installed package version, hosts, preserved sources, actual acceptance checks, pending tests and rollback location. Installing this workflow does not authorize a historical chat import, training upload or publication of the private vault.
+
+## Add the two task lists to an existing installation
+
+During setup or a plugin upgrade, search the vault index, hub and task folders for an agent ledger and the person's own to-do list. Confirm which actual notes serve each role. Prefer the existing notes, including lists in custom folders. Ignore conflict copies unless the owner selects one. Keep existing tables, stewards and completed items intact. Create only a missing list, using the [agent template](../assets/agent-tasks.md) or [personal template](../assets/personal-tasks.md). Link both actual paths in the live vault AGENTS.md, other independent harness manuals, index and hub. Record which connected agents may maintain them on request.
+
+Add the [task workflow](tasks.md) and [agenda helper](../scripts/task_agenda.py) to the vault's canonical procedure using the reviewed upgrade process. Existing startup bindings that already read the live manual can continue using it. For an older or customized vault use this guided integration, including reviewed binding updates where necessary. Preserve its installation marker and private edits. Test both routes before calling the upgrade complete. Discover existing reminder jobs and record their actual provider, timezone, destination, ID and enabled state before offering a new schedule.

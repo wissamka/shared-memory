@@ -53,6 +53,12 @@ flowchart LR
 
 Daily review covers authorized sources the selected runtime can actually access. Local-only conversations, unavailable accounts and incomplete exports remain explicit coverage gaps. Session capture at milestones reduces dependence on proprietary chat-history formats. A shared drive synchronizes files; it does not grant another AI tool access or automatically install a scheduler.
 
+## Two task lists across agents
+
+Ask “compare the quotes” and the agent tracks its work in **Task List.md**, updates progress and closes the row when it verifies the result. Say “add calling the supplier on Thursday to my tasks” and the agent adds it to **My Tasks.md** for you. Ask “what’s on my list?” from any connected agent. Setup reuses your existing lists if you have them.
+
+You can enable a **daily reminder** for personal tasks due today or tomorrow and a **Sunday evening preview** for the following Monday through Sunday. Setup confirms your times, timezone and private destination, then connects the selected schedules. See the [task workflow](references/tasks.md).
+
 ## Install the plugin
 
 For **ChatGPT desktop / Codex**, use the native plugin installer:
