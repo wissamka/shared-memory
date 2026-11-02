@@ -12,17 +12,34 @@ from common import cli_encoding, safe_path, within
 
 
 def cells(line):
+    body = line.strip().removeprefix('|')
+    if body.endswith('|') and not body.endswith(r'\|'):
+        body = body[:-1]
     return [cell.strip().replace(r'\|', '|') for cell in
-            re.split(r'(?<!\\)\|', line.strip().strip('|'))]
+            re.split(r'(?<!\\)\|', body)]
 
 
 def personal_tasks(text):
     """Accept repeated Markdown task tables, including an existing two-section list."""
-    lines = text.splitlines()
+    # Fenced examples may contain plausible-looking tasks. Only read live tables.
+    lines = []
+    fence = ''
+    for line in text.splitlines():
+        stripped = line.lstrip()
+        if fence:
+            candidate = stripped.rstrip()
+            if len(candidate) >= len(fence) and set(candidate) == {fence[0]}:
+                fence = ''
+            lines.append('')
+        elif (opening := re.match(r'^(`{3,}|~{3,})', stripped)):
+            fence = opening.group(1)
+            lines.append('')
+        else:
+            lines.append(line)
     found = False
     tasks = []
     for index, line in enumerate(lines[:-1]):
-        if not line.lstrip().startswith('|'):
+        if '|' not in line:
             continue
         header = [name.casefold() for name in cells(line)]
         if not {'task', 'status', 'due'}.issubset(header):
@@ -34,7 +51,7 @@ def personal_tasks(text):
             raise ValueError(f'Duplicate task column at line {index + 1}')
         found = True
         for number in range(index + 2, len(lines)):
-            if not lines[number].lstrip().startswith('|'):
+            if '|' not in lines[number]:
                 break
             row = cells(lines[number])
             if len(row) != len(header):
