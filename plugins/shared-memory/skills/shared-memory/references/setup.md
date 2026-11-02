@@ -12,6 +12,8 @@ Reuse answers and authorization already supplied. Read the [interview](interview
 2. **Agents and capture:** “Which tools should use this memory, globally or only in this project? May I append a memory section to their startup instructions? Should I retain useful decisions as we work or only what you explicitly ask me to remember?” Inspect the actual supported files before proposing them. Ask about source accounts/projects, prospective collection start date and exclusions; do not equate daily synthesis with permission to import all history.
 3. **Daily review:** “Would you like automatic daily synthesis or review only when asked?” If daily, ask for time/timezone, execution host and notification preference. Propose 02:00 for the previous local day only as an option. Explain which machine must be available. Inspect existing tasks for this vault and purpose before proposing a new one.
 
+For tasks, locate or create the two canonical lists and show which one agents update for each kind of request. Offer a daily morning reminder for today and tomorrow and a Sunday evening preview for the following week. Confirm timezone, times and private destination for each selected cadence. During setup configure each approved job and read its settings back using the [task workflow](tasks.md). Save the provider ID and delivery status in the private reminder receipt.
+
 Quick setup needs only the operational choices plus a preferred name or alias and a short communication preference. Offer the deeper document/voice interview after the working connection. Missing optional biography, writing samples or archive consent must not block core setup. An existing vault's preferences remain authoritative.
 
 ## 2. Present the concrete plan, then apply

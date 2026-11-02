@@ -31,3 +31,7 @@ Run these checks using harmless fictional content, then record results in `Autom
 Record evidence through [readiness](readiness.md) and the live log; archive/style checks follow [voice guidance](voice.md).
 
 The automated package tests check file and bookkeeping behavior. The live agent must still evaluate synthesis quality, permission scope and whether another harness actually loaded instructions.
+
+## Task routing and reminder acceptance
+
+In a disposable vault, delegate a sample check to one connected agent. Verify the agent's row moves from Open to Done with the actual result. In another connected session say “add this to my own tasks” with a dated sample. Verify it appears only in the mapped personal list and remains open after the agent saves it. Ask for the daily reminder and the Sunday preview, verify both date boundaries, then close the sample and confirm it drops out of both. Inspect the two scheduler receipts separately. An agenda preview establishes date filtering. A settings readback establishes configuration. Record first delivery only when observed.

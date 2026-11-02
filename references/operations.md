@@ -9,7 +9,7 @@ Resolve “this” from the current conversation. If clear, save immediately wit
 3. Update the appropriate maintained note in the same session. Explicit requests to remember a preference must reach Personal/Preferences.md now, not wait silently in the inbox until tomorrow. If its home is uncertain, save in the inbox and say so.
 4. Link the session/source, update navigation and log, read back, and report the destination briefly. A capture is not independent verification of its contents.
 
-At meaningful milestones, save a session record: goal, useful facts/decisions with attribution, outputs, unresolved questions and next action. Save task state in Working/Handoff.md or a project handoff. Do not record hidden reasoning. A summary must disclose omitted or unavailable portions of the conversation.
+At meaningful milestones, save a session record: goal, useful facts/decisions with attribution, outputs, unresolved questions and next action. Record assigned work in the canonical agent task list and the person’s own actions in their personal list. Link the row from a handoff when useful. Follow the [two-list workflow](tasks.md). Do not record hidden reasoning. A summary must disclose omitted or unavailable portions of the conversation.
 
 ## Recall and resume
 
