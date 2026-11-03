@@ -55,7 +55,7 @@ Daily review covers authorized sources the selected runtime can actually access.
 
 ## Two task lists across agents
 
-Ask “compare the quotes” and the agent tracks its work in **Task List.md**, updates progress and closes the row when it verifies the result. Say “add calling the supplier on Thursday to my tasks” and the agent adds it to **My Tasks.md** for you. Ask “what’s on my list?” from any connected agent. Setup reuses your existing lists if you have them.
+Ask “compare the quotes” and the agent tracks its work in **Task List.md**, updates progress and closes the row when it verifies the result. Say “add calling the supplier on Thursday to my tasks” and the agent adds it to **My Tasks.md** for you. Finished entries from both lists move to **Completed Task List.md** after the archived copy is verified. Agents consult that file on request and leave it out of normal startup and reminders. Ask “what’s on my list?” from any connected agent. Setup reuses your existing lists if you have them.
 
 You can enable a **daily reminder** for personal tasks due today or tomorrow and a **Sunday evening preview** for the following Monday through Sunday. Setup confirms your times, timezone and private destination, then connects the selected schedules. See the [task workflow](references/tasks.md).
 
