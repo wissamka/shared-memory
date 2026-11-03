@@ -179,3 +179,5 @@ Updating the installed plugin also does not automatically update `Procedures/sha
 ## Task lists and personal reminders
 
 The bootstrap creates two Markdown trackers and a private schedule receipt. The agent edits the trackers according to the [task workflow](tasks.md). The [agent list template](../assets/agent-tasks.md) holds work agents accept. The [personal list template](../assets/personal-tasks.md) holds work the owner plans to do. The [agenda helper](../scripts/task_agenda.py) reads the personal list, selects due dates in the owner's timezone and prints the daily or weekly agenda. The host scheduler handles delivery.
+
+The [archive helper](../scripts/archive_tasks.py) copies completed entries from both active lists, verifies their exact archived contents and removes matching active rows. Shared storage uses separate copy and verified-prune steps. Ordinary reminders read the personal active list only.
