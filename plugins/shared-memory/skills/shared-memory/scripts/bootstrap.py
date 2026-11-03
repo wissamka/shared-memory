@@ -116,6 +116,7 @@ def build(c, root, now):
         'Track delegated work from acceptance to verified completion in [Task List](Task%20List.md). '
         'Route “add this to my tasks”, personal list queries and reminders to [My Tasks](My%20Tasks.md). '
         'Read the [task workflow](Procedures/shared-memory/references/tasks.md) before updating either list. '
+        'Move finished agent and personal tasks to Completed Task List.md. Open the archive only for archiving or an explicit history request. '
         'Read the shared agent list at session start and update your rows at meaningful milestones. '
         'Canonical procedure: [shared-memory](Procedures/shared-memory/SKILL.md). '
         'Detailed schema: [schema](Procedures/shared-memory/references/schema.md).\n\n'
@@ -173,6 +174,8 @@ def build(c, root, now):
     for filename, asset in [('Task List.md', 'agent-tasks.md'), ('My Tasks.md', 'personal-tasks.md')]:
         body = (PACKAGE / 'assets' / asset).read_text(encoding='utf-8')
         add(filename, body + '\n[Task workflow](Procedures/shared-memory/references/tasks.md)', 'tracker')
+    add('Completed Task List.md', '# Completed Task List\n\nOn-demand history of finished agent and personal tasks. '
+        'Exclude this note from startup, handoffs and reminder inputs. Preserve original rows, dates and sources.', 'archive')
     add('Automation/Task reminders.md', '# Personal task reminder settings\n\n'
         f'Personal list: [My Tasks](../My%20Tasks.md). Vault timezone: {c["timezone"]}.\n\n'
         '| Cadence | State | Time / timezone | Private destination | Provider / job ID | Next run | Delivery observed |\n'

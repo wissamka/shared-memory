@@ -13,6 +13,20 @@ Use the context to resolve “this.” Ask when the action, assignee or due date
 
 Before a write reread the canonical note. Match task and source against existing open rows to avoid duplicates on retry. Preserve other agents' changes, keep requested dates separate from guesses, and include a source reference in Notes or Outcome. Read back the saved row, update edit provenance and log the change under the vault's rules. A handoff may link to a task row. If there are several matches, clarify which item to change.
 
+## Archive a completion
+
+Keep open, blocked, waiting and recurring work on the two active lists. When the person confirms completion or the agent verifies its result, record the outcome, actual closure date and source. In the same operation **move the finished entry to one shared `Completed Task List.md`**. Preserve its agent/personal origin, assignee, original wording, dates and evidence. Verify the archived contents before removing the matching row from its active list. Log the move and update edit provenance under the vault's rules.
+
+Read the archive only when writing or verifying a move, or when the person explicitly asks for completed-task history. Startup, ordinary task queries, daily synthesis context and personal reminder prompts use the active lists only. A catalog may name the archive without loading its contents.
+
+The [archive helper](../scripts/archive_tasks.py) previews existing Done/Closed/Completed rows and checked Markdown items in both lists. Mark a newly finished row with the relevant evidence before running it. Its output contains counts and a digest, keeping historical task content out of agent context. For local-only storage use `--apply`. For shared storage use the following order:
+
+1. Run `python3 scripts/archive_tasks.py --vault "/path/to/vault" --copy`. Set `--agent-list`, `--personal-list` and `--archive` to the mapped relative paths when needed.
+2. Fetch the saved archive from the provider and compare its SHA-256 to the helper output. If this fails or the source changes, keep the active rows pending.
+3. Run the same command with `--prune --verified-archive-sha256 HASH` in place of `--copy`. Read back both active lists. On retry a matching archive receipt prevents duplicate entries. Resolve collisions manually. Use one writer. Verify shared files through the actual provider.
+
+For connector-only access use the same copy, verify and prune sequence with current revisions. During an upgrade inspect existing archives and completed sections. Reconcile overlapping records into the chosen archive, verify the original fields, and preserve prior names as pointers where useful. Keep existing relative evidence links valid when choosing the archive folder.
+
 ## Personal reminders
 
 Offer two independent, opt-in notifications during setup. Confirm the person's timezone, times and private delivery destination. Reuse choices already supplied.
