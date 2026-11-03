@@ -19,8 +19,8 @@ def cells(line):
             re.split(r'(?<!\\)\|', body)]
 
 
-def personal_tasks(text):
-    """Accept repeated Markdown task tables, including an existing two-section list."""
+def visible_lines(text):
+    """Keep line positions while excluding fenced examples."""
     # Fenced examples may contain plausible-looking tasks. Only read live tables.
     lines = []
     fence = ''
@@ -36,6 +36,12 @@ def personal_tasks(text):
             lines.append('')
         else:
             lines.append(line)
+    return lines
+
+
+def personal_tasks(text):
+    """Accept repeated Markdown task tables, including an existing two-section list."""
+    lines = visible_lines(text)
     found = False
     tasks = []
     for index, line in enumerate(lines[:-1]):

@@ -35,3 +35,5 @@ The automated package tests check file and bookkeeping behavior. The live agent 
 ## Task routing and reminder acceptance
 
 In a disposable vault, delegate a sample check to one connected agent. Verify the agent's row moves from Open to Done with the actual result. In another connected session say “add this to my own tasks” with a dated sample. Verify it appears only in the mapped personal list and remains open after the agent saves it. Ask for the daily reminder and the Sunday preview, verify both date boundaries, then close the sample and confirm it drops out of both. Inspect the two scheduler receipts separately. An agenda preview establishes date filtering. A settings readback establishes configuration. Record first delivery only when observed.
+
+Verify that closing a task on either active list produces one complete archive entry. Interrupt after copying, retry, and confirm the source row disappears only after archive readback. Check that ordinary personal reminders can run with the archive unavailable.

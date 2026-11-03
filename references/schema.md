@@ -15,6 +15,7 @@ The generated vault uses plain Markdown and normal links, readable in Obsidian w
 | `RAW/` | Original evidence, preserved during ordinary maintenance |
 | `_Inbox/` | Content-addressed captures awaiting synthesis |
 | `Task List.md` / `My Tasks.md` | Delegated agent work / actions the owner will do. Every harness uses the same mapped pair. |
+| `Completed Task List.md` | Verified completed agent and personal tasks. On-demand history, excluded from normal reads. |
 | `Automation/Task reminders.md` | Daily and Sunday personal reminder settings, real scheduler IDs and observed delivery. |
 | `Working/` | Handoff, unresolved conflicts and pending writes |
 | `Procedures/` | Shared-memory skill and owner-specific writing procedure |
