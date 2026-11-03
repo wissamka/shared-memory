@@ -42,7 +42,8 @@ class CompletedTaskTests(Case):
         self.assertIn(PROOF, self.agent.read_text(encoding='utf-8'))
         self.assertEqual(0, self.move('copy')['copied'])
         # Another resume already pruned the first list.
-        self.agent.write_bytes(self.agent.read_bytes().replace((PROOF + '\n').encode(), b''))
+        self.agent.write_bytes(b''.join(line for line in self.agent.read_bytes().splitlines(keepends=True)
+                                        if line.rstrip(b'\r\n') != PROOF.encode()))
         self.assertEqual(1, self.move('prune', result['archive_sha256'])['removed'])
         self.assertEqual(0, self.move('apply')['removed'])
         self.assertEqual(1, self.history.read_text(encoding='utf-8').count(FINISHED))
@@ -99,3 +100,10 @@ class CompletedTaskTests(Case):
         with self.assertRaisesRegex(ValueError, 'distinct'):
             transfer(self.root, self.agent.name, self.personal.name, self.agent.name, 'copy')
         self.assertEqual(original, self.history.read_bytes())
+
+    def test_kept_rows_retain_crlf_and_original_bytes(self):
+        prefix = AGENT.replace('\n', '\r\n').encode()
+        keep = '| Café | Waiting | Team | Pending | | |\r\n'.encode()
+        self.agent.write_bytes(prefix + PROOF.encode() + b'\r\n' + keep)
+        self.move('apply')
+        self.assertEqual(prefix + keep, self.agent.read_bytes())
